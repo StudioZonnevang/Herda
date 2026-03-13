@@ -9,3 +9,5 @@
 **[[david planning]]**
 
 **[[sander planning]]**
+
+**[[stretch goal mechanics]]** - cute, low priority ideas

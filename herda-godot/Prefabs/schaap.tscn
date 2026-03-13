@@ -1,11 +1,11 @@
 [gd_scene format=3 uid="uid://cgb4u6fgjtacl"]
 
-[ext_resource type="Material" uid="uid://ch0net5hgvigx" path="res://Materials/sheep-material.tres" id="1_3k1mh"]
-[ext_resource type="Script" uid="uid://cd0dkjl7r6ngh" path="res://Code/Scripts/sheep.gd" id="1_5i12d"]
+[ext_resource type="Material" uid="uid://ch0net5hgvigx" path="res://Materials/schaap-material.tres" id="1_3k1mh"]
+[ext_resource type="Script" uid="uid://cd0dkjl7r6ngh" path="res://Code/Scripts/schaap.gd" id="1_5i12d"]
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3k1mh"]
 
-[node name="Sheep" type="Node3D" unique_id=267504549]
+[node name="Schaap" type="Node3D" unique_id=267504549]
 script = ExtResource("1_5i12d")
 
 [node name="Body" type="MeshInstance3D" parent="." unique_id=1229517002]

@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://bu0xi632uidrt"]
 
-[ext_resource type="Script" uid="uid://bshyohh1ht245" path="res://scripts/herder.gd" id="1_f4ovj"]
-[ext_resource type="Material" uid="uid://cr1gjnnsjahvh" path="res://herder_material.tres" id="2_xi5l7"]
+[ext_resource type="Script" uid="uid://bshyohh1ht245" path="res://Code/Scripts/herder.gd" id="1_f4ovj"]
+[ext_resource type="Material" uid="uid://cr1gjnnsjahvh" path="res://Materials/herder-material.tres" id="2_xi5l7"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_exm3w"]
 size = Vector3(0.75, 1.7, 0.5)

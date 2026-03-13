@@ -3,7 +3,7 @@
 [ext_resource type="Material" uid="uid://qyc42iv8faw0" path="res://Materials/test-orm-material-sander.tres" id="1_2iirl"]
 [ext_resource type="Script" uid="uid://dn1pe206fribm" path="res://Code/Scripts/test-script-sander.gd" id="1_r3rrw"]
 [ext_resource type="PackedScene" uid="uid://sojjsu43qbrg" path="res://Prefabs/test-item.tscn" id="3_ayitv"]
-[ext_resource type="PackedScene" uid="uid://cgb4u6fgjtacl" path="res://Prefabs/Sheep.tscn" id="4_6yfuc"]
+[ext_resource type="PackedScene" uid="uid://cgb4u6fgjtacl" path="res://Prefabs/schaap.tscn" id="4_6yfuc"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_iygvv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)

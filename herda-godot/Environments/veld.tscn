@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bb1f7k55loof7"]
 
-[ext_resource type="PackedScene" uid="uid://bu0xi632uidrt" path="res://herder_scene.tscn" id="1_kes36"]
+[ext_resource type="PackedScene" uid="uid://bu0xi632uidrt" path="res://Prefabs/herder.tscn" id="1_rvhd0"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fvqsh"]
 albedo_color = Color(0.07871274, 0.17750236, 2.5268645e-07, 1)
@@ -63,4 +63,4 @@ size = Vector3(6.477295, 4.3895264, 1.293457)
 transform = Transform3D(0.8064446, 0, 0.59130967, 0, 1, 0, -0.59130967, 0, 0.8064446, -7.799288, 0.5402527, -2.6651325)
 size = Vector3(4.3100586, 2.0805054, 5.7958984)
 
-[node name="herder_scene" parent="." unique_id=571143864 instance=ExtResource("1_kes36")]
+[node name="herder_scene" parent="." unique_id=571143864 instance=ExtResource("1_rvhd0")]

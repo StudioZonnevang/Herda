@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "project planning.md",
+                "file": "stretch goal mechanics.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "project planning"
+              "title": "stretch goal mechanics"
             }
           },
           {
@@ -41,12 +41,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "schaap.md",
+                "file": "bibliography.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "schaap"
+              "title": "bibliography"
             }
           },
           {
@@ -77,8 +77,7 @@
               "title": "project scope"
             }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "vertical"
@@ -111,7 +110,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "bibli",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -132,7 +131,8 @@
               "title": "Bookmarks"
             }
           }
-        ]
+        ],
+        "currentTab": 1
       },
       {
         "id": "2bb6109ad793fd01",
@@ -258,19 +258,20 @@
       "bases:Create new base": false
     }
   },
-  "active": "034c646b23127768",
+  "active": "25f1e069554bf786",
   "lastOpenFiles": [
-    "herding mechanic.md",
-    "schaap.md",
-    "herder.md",
     "project planning.md",
+    "stretch goal mechanics.md",
+    "herder.md",
+    "bibliography.md",
+    "schaap.md",
+    "herding mechanic.md",
     "sander planning.md",
     "david planning.md",
     "sheep.md",
     "gameplay loop.md",
     "project scope.md",
     "landing.md",
-    "bibliography.md",
     "Welcome.md"
   ]
 }

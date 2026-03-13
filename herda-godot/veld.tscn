@@ -1,6 +1,66 @@
 [gd_scene format=3 uid="uid://bb1f7k55loof7"]
 
+[ext_resource type="PackedScene" uid="uid://bu0xi632uidrt" path="res://herder_scene.tscn" id="1_kes36"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fvqsh"]
+albedo_color = Color(0.07871274, 0.17750236, 2.5268645e-07, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_kes36"]
+material = SubResource("StandardMaterial3D_fvqsh")
+size = Vector2(200, 200)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_45o6w"]
+points = PackedVector3Array(-100, 0, -100, -100, 0, 100, 100, 0, 100, 100, 0, -100)
+
+[sub_resource type="Environment" id="Environment_kes36"]
+background_mode = 1
+background_color = Color(0.6789437, 0.6789437, 0.6789437, 1)
+ambient_light_color = Color(1, 1, 1, 1)
+
 [node name="veld" type="Node3D" unique_id=758643933]
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1340288076]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 2)
+[node name="grond" type="StaticBody3D" parent="." unique_id=271516881]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="grond" unique_id=1574474382]
+mesh = SubResource("PlaneMesh_kes36")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="grond" unique_id=1315690791]
+shape = SubResource("ConvexPolygonShape3D_45o6w")
+
+[node name="achtergrond" type="WorldEnvironment" parent="." unique_id=625299007]
+environment = SubResource("Environment_kes36")
+
+[node name="zonnetje" type="DirectionalLight3D" parent="." unique_id=761147562]
+transform = Transform3D(0.92899054, -0.284332, 0.23692173, 0, 0.64014995, 0.76825, -0.37010348, -0.71369696, 0.59469324, 0, 0, 0)
+light_energy = 1.92
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="." unique_id=892237312]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="CSGCombiner3D" unique_id=993398921]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.5955944, 0, 3.9113846)
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="CSGCombiner3D" unique_id=2139002942]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -6.956005, 0, 6.989517)
+size = Vector3(4.4506836, 1, 2.666504)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="CSGCombiner3D" unique_id=2051744807]
+transform = Transform3D(0.78156406, 0, -0.623825, 0, 1, 0, 0.623825, 0, 0.78156406, 10.514103, 1.6947632, 9.7990055)
+size = Vector3(4.3100586, 4.3895264, 5.7958984)
+
+[node name="CSGBox3D5" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1995547646]
+transform = Transform3D(0.08421704, 0, -0.99644744, 0, 1, 0, 0.99644744, 0, 0.08421704, 3.3031816, 1.6947632, -12.681427)
+size = Vector3(4.3100586, 4.3895264, 3.3261719)
+
+[node name="CSGBox3D6" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1209654011]
+transform = Transform3D(0.08421704, 0, -0.99644744, 0, 1, 0, 0.99644744, 0, 0.08421704, 14.853061, 1.6947632, -2.7315583)
+size = Vector3(4.3100586, 4.3895264, 9.1171875)
+
+[node name="CSGBox3D7" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1258684608]
+transform = Transform3D(0.08421704, 0, -0.99644744, 0, 1, 0, 0.99644744, 0, 0.08421704, 1.0752478, 1.6947632, 13.940778)
+size = Vector3(6.477295, 4.3895264, 1.293457)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="CSGCombiner3D" unique_id=1388238618]
+transform = Transform3D(0.8064446, 0, 0.59130967, 0, 1, 0, -0.59130967, 0, 0.8064446, -7.799288, 0.5402527, -2.6651325)
+size = Vector3(4.3100586, 2.0805054, 5.7958984)
+
+[node name="herder_scene" parent="." unique_id=571143864 instance=ExtResource("1_kes36")]

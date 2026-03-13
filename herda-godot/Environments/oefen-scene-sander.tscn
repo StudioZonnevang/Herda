@@ -1,0 +1,58 @@
+[gd_scene format=3 uid="uid://cgjykwmnlei37"]
+
+[ext_resource type="Material" uid="uid://qyc42iv8faw0" path="res://Materials/test-orm-material-sander.tres" id="1_2iirl"]
+[ext_resource type="Script" uid="uid://dn1pe206fribm" path="res://Code/Scripts/test-script-sander.gd" id="1_r3rrw"]
+[ext_resource type="PackedScene" uid="uid://sojjsu43qbrg" path="res://Prefabs/test-item.tscn" id="3_ayitv"]
+[ext_resource type="PackedScene" uid="uid://cgb4u6fgjtacl" path="res://Prefabs/Sheep.tscn" id="4_6yfuc"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_iygvv"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_r3rrw"]
+sky_material = SubResource("ProceduralSkyMaterial_iygvv")
+
+[sub_resource type="Environment" id="Environment_2iirl"]
+background_mode = 2
+sky = SubResource("Sky_r3rrw")
+tonemap_mode = 2
+
+[sub_resource type="SphereMesh" id="SphereMesh_iygvv"]
+
+[node name="Node3D" type="Node3D" unique_id=46494462]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=12373418]
+environment = SubResource("Environment_2iirl")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1357101177]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 4.9298153, 0)
+shadow_enabled = true
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1261021616]
+transform = Transform3D(0.5550332, -0.31045035, 0.7717245, 0, 0.9277451, 0.37321448, -0.83182824, -0.20714642, 0.5149293, 6.5645547, 2.9698334, 5.3175554)
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1613617131]
+transform = Transform3D(1.3854771, 0, 0, 0, 1.3854771, 0, 0, 0, 3.0006697, -1.1605601, 2.3841858e-07, -0.41953945)
+material_override = ExtResource("1_2iirl")
+material_overlay = ExtResource("1_2iirl")
+mesh = SubResource("SphereMesh_iygvv")
+script = ExtResource("1_r3rrw")
+has_gravity = false
+
+[node name="CSGBox3D" type="CSGBox3D" parent="." unique_id=519539788]
+transform = Transform3D(1.3854771, 0, 0, 0, 1.3854771, 0, 0, 0, 3.0006697, -0.13127828, -0.9401236, 0)
+use_collision = true
+size = Vector3(5.0458984, 0.26062012, 2.5778809)
+
+[node name="CSGCylinder3D" type="CSGCylinder3D" parent="CSGBox3D" unique_id=686487642]
+transform = Transform3D(0.721773, 0, 0, 0, 0.721773, 0, 0, 0, 0.3332589, 1.5760466, -0.10226196, 0.8704647)
+operation = 2
+use_collision = true
+radius = 1.0185547
+height = 1.1337891
+
+[node name="Node3D" parent="." unique_id=598430023 instance=ExtResource("3_ayitv")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34258938, -0.25958204, -0.1592685)
+
+[node name="Sheep" parent="." unique_id=267504549 instance=ExtResource("4_6yfuc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0028813, -0.25958246, 0.20088398)

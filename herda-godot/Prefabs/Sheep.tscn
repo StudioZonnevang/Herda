@@ -1,0 +1,14 @@
+[gd_scene format=3 uid="uid://cgb4u6fgjtacl"]
+
+[ext_resource type="Material" uid="uid://ch0net5hgvigx" path="res://Materials/sheep-material.tres" id="1_3k1mh"]
+[ext_resource type="Script" uid="uid://cd0dkjl7r6ngh" path="res://Code/Scripts/sheep.gd" id="1_5i12d"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_3k1mh"]
+
+[node name="Sheep" type="Node3D" unique_id=267504549]
+script = ExtResource("1_5i12d")
+
+[node name="Body" type="MeshInstance3D" parent="." unique_id=1229517002]
+transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
+mesh = SubResource("CapsuleMesh_3k1mh")
+surface_material_override/0 = ExtResource("1_3k1mh")

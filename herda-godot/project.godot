@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="Herda_Godot"
+run/main_scene="uid://bb1f7k55loof7"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 

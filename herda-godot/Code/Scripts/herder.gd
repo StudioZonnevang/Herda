@@ -5,7 +5,7 @@ const CAMERA_X_ROT_MIN: float = deg_to_rad(-79.9)
 const CAMERA_X_ROT_MAX: float = deg_to_rad(110.0) 
 const TURN_SPEED: float = 6
 
-@export var v_walk: float = 2
+@export var v_walk: float = 1.5
 @export var v_backwards: float = 1
 
 @export var cam: Camera3D
@@ -56,7 +56,7 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		var camera_speed_this_frame = MOUSE_SENSITIVITY
 		rotate_camera(event.screen_relative * camera_speed_this_frame)
-	if Input.is_action_just_pressed("nudge"):
+	if Input.is_action_just_pressed("nudge") and velocity.length() == 0:
 		state_machine.travel("shove")
 	if Input.is_action_just_pressed("reset"):
 		get_tree().reload_current_scene()

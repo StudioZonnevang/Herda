@@ -1,10 +1,13 @@
 [gd_scene format=3 uid="uid://bb1f7k55loof7"]
 
+[ext_resource type="Texture2D" uid="uid://ddvdpya5ne1dv" path="res://icon.svg" id="1_4x8bh"]
 [ext_resource type="PackedScene" uid="uid://bu0xi632uidrt" path="res://Prefabs/herder.tscn" id="1_rvhd0"]
 [ext_resource type="PackedScene" uid="uid://cgb4u6fgjtacl" path="res://Prefabs/schaap.tscn" id="2_kiesj"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fvqsh"]
 albedo_color = Color(0.07871274, 0.17750236, 2.5268645e-07, 1)
+albedo_texture = ExtResource("1_4x8bh")
+uv1_scale = Vector3(100, 100, 100)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_kes36"]
 material = SubResource("StandardMaterial3D_fvqsh")

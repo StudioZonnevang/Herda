@@ -82,6 +82,7 @@ switch_mode = 2
 advance_mode = 2
 
 [sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gb1oi"]
+xfade_time = 0.2
 advance_mode = 2
 advance_expression = "velocity.length() == 0"
 
@@ -96,7 +97,7 @@ advance_mode = 2
 advance_expression = "velocity.length() > 0 and velocity.length() < v_backwards + 0.1"
 
 [sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ahfky"]
-states/Start/position = Vector2(114, 100)
+states/Start/position = Vector2(112, 43)
 states/chilling/node = SubResource("AnimationNodeAnimation_wgf1x")
 states/chilling/position = Vector2(270, 43)
 "states/enter walk/node" = SubResource("AnimationNodeAnimation_kcuig")
@@ -104,13 +105,13 @@ states/chilling/position = Vector2(270, 43)
 "states/enter walk 2/node" = SubResource("AnimationNodeAnimation_qa8do")
 "states/enter walk 2/position" = Vector2(460, 175.688)
 states/shove/node = SubResource("AnimationNodeAnimation_4ssf0")
-states/shove/position = Vector2(314, 175.688)
+states/shove/position = Vector2(270, 212.688)
 states/walk/node = SubResource("AnimationNodeAnimation_8xphm")
 states/walk/position = Vector2(646, 78)
 "states/walk back/node" = SubResource("AnimationNodeAnimation_02vvc")
 "states/walk back/position" = Vector2(664.8823, 145.06833)
 transitions = ["enter walk", "walk", SubResource("AnimationNodeStateMachineTransition_36dhw"), "Start", "chilling", SubResource("AnimationNodeStateMachineTransition_02vvc"), "chilling", "enter walk", SubResource("AnimationNodeStateMachineTransition_1hm3l"), "shove", "chilling", SubResource("AnimationNodeStateMachineTransition_eor8k"), "chilling", "shove", SubResource("AnimationNodeStateMachineTransition_24grh"), "walk", "chilling", SubResource("AnimationNodeStateMachineTransition_4ssf0"), "chilling", "enter walk 2", SubResource("AnimationNodeStateMachineTransition_qa8do"), "enter walk 2", "walk back", SubResource("AnimationNodeStateMachineTransition_8xphm"), "walk back", "chilling", SubResource("AnimationNodeStateMachineTransition_gb1oi"), "walk back", "walk", SubResource("AnimationNodeStateMachineTransition_ahfky"), "walk", "walk back", SubResource("AnimationNodeStateMachineTransition_qc4jr")]
-graph_offset = Vector2(-301.11765, 4.0683274)
+graph_offset = Vector2(-128.11765, 3.0683289)
 
 [sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_gb1oi"]
 animation = &"look left"
@@ -132,7 +133,7 @@ min_space = -2.1
 max_space = 2.1
 
 [sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_qc4jr"]
-graph_offset = Vector2(-524.7605, 281.97415)
+graph_offset = Vector2(-435.71225, 70.2682)
 nodes/output/position = Vector2(300, 140)
 "nodes/animation states/node" = SubResource("AnimationNodeStateMachine_ahfky")
 "nodes/animation states/position" = Vector2(-160, 120)

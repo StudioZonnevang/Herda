@@ -23,3 +23,6 @@ Implementation options:
 The main interaction through which the herder can directly get a [[schaap]] moving. In the end the herd needs to collectively understand where they're going, but this is sheep psychology. This is about the immediate 1-on-1 schaap - herder interaction.
 - A nudge reorients the schaap and refreshes the schaap's goal state.
 	- This doesn't mean they will necessarily start moving
+
+### Animation
+I want some level of procedural animation to account for the complex movements between sheep and environment. this means i need poses it can blend between multidimensionally. probably. or i need to configure the fucking animation style where you move the target and it adjusts the bone rotations automatically but idk i dont fuck with that so much it always gets goofy in a way thats no longer interesting.

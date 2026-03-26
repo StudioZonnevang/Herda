@@ -1,47 +1,16 @@
 [gd_scene format=3 uid="uid://bu0xi632uidrt"]
 
 [ext_resource type="Script" uid="uid://bshyohh1ht245" path="res://Code/Scripts/herder.gd" id="1_f4ovj"]
-[ext_resource type="Material" uid="uid://cr1gjnnsjahvh" path="res://Materials/herder-material.tres" id="2_xi5l7"]
+[ext_resource type="PackedScene" uid="uid://c1f42odnamvj0" path="res://Models/herda.glb" id="2_4ssf0"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_exm3w"]
 size = Vector3(0.75, 1.7, 0.5)
 
-[sub_resource type="BoxMesh" id="BoxMesh_ley1s"]
-material = ExtResource("2_xi5l7")
-size = Vector3(0.75, 1.6, 0.4)
-subdivide_width = 2
-subdivide_height = 2
-subdivide_depth = 2
-
 [sub_resource type="Animation" id="Animation_f4ovj"]
 length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("model:mesh:material:albedo_color")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 0,
-"values": [Color(1, 1, 1, 1)]
-}
 
 [sub_resource type="Animation" id="Animation_xi5l7"]
 resource_name = "nudge"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("model:mesh:material:albedo_color")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [Color(1, 1, 1, 1), Color(1, 0, 0, 1), Color(1, 1, 1, 1)]
-}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_d3d77"]
 _data = {
@@ -49,10 +18,134 @@ _data = {
 &"nudge": SubResource("Animation_xi5l7")
 }
 
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_4ssf0"]
+filter_enabled = true
+filters = ["", "herda/Skeleton3D:borst", "herda/Skeleton3D:buik", "herda/Skeleton3D:schedel"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_wgf1x"]
+animation = &"chilling"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qa8do"]
+animation = &"enter walk"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_kcuig"]
+animation = &"enter walk"
+use_custom_timeline = true
+timeline_length = 0.4
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_4ssf0"]
+animation = &"shove"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_02vvc"]
+animation = &"walk"
+play_mode = 1
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_8xphm"]
+animation = &"walk"
+use_custom_timeline = true
+timeline_length = 1.0
+stretch_time_scale = true
+start_offset = 0.0
+loop_mode = 1
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_36dhw"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_02vvc"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_1hm3l"]
+advance_mode = 2
+advance_expression = "velocity.length() > v_walk - 0.1"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_eor8k"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_24grh"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_4ssf0"]
+xfade_time = 0.2
+advance_mode = 2
+advance_expression = "velocity.length() == 0"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_qa8do"]
+advance_mode = 2
+advance_expression = "velocity.length() > 0 and velocity.length() < v_backwards + 0.1"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_8xphm"]
+switch_mode = 2
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_gb1oi"]
+advance_mode = 2
+advance_expression = "velocity.length() == 0"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ahfky"]
+switch_mode = 1
+advance_mode = 2
+advance_expression = "velocity.length() > v_walk - 0.1"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_qc4jr"]
+switch_mode = 1
+advance_mode = 2
+advance_expression = "velocity.length() > 0 and velocity.length() < v_backwards + 0.1"
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_ahfky"]
+states/Start/position = Vector2(114, 100)
+states/chilling/node = SubResource("AnimationNodeAnimation_wgf1x")
+states/chilling/position = Vector2(270, 43)
+"states/enter walk/node" = SubResource("AnimationNodeAnimation_kcuig")
+"states/enter walk/position" = Vector2(488, -6)
+"states/enter walk 2/node" = SubResource("AnimationNodeAnimation_qa8do")
+"states/enter walk 2/position" = Vector2(460, 175.688)
+states/shove/node = SubResource("AnimationNodeAnimation_4ssf0")
+states/shove/position = Vector2(314, 175.688)
+states/walk/node = SubResource("AnimationNodeAnimation_8xphm")
+states/walk/position = Vector2(646, 78)
+"states/walk back/node" = SubResource("AnimationNodeAnimation_02vvc")
+"states/walk back/position" = Vector2(664.8823, 145.06833)
+transitions = ["enter walk", "walk", SubResource("AnimationNodeStateMachineTransition_36dhw"), "Start", "chilling", SubResource("AnimationNodeStateMachineTransition_02vvc"), "chilling", "enter walk", SubResource("AnimationNodeStateMachineTransition_1hm3l"), "shove", "chilling", SubResource("AnimationNodeStateMachineTransition_eor8k"), "chilling", "shove", SubResource("AnimationNodeStateMachineTransition_24grh"), "walk", "chilling", SubResource("AnimationNodeStateMachineTransition_4ssf0"), "chilling", "enter walk 2", SubResource("AnimationNodeStateMachineTransition_qa8do"), "enter walk 2", "walk back", SubResource("AnimationNodeStateMachineTransition_8xphm"), "walk back", "chilling", SubResource("AnimationNodeStateMachineTransition_gb1oi"), "walk back", "walk", SubResource("AnimationNodeStateMachineTransition_ahfky"), "walk", "walk back", SubResource("AnimationNodeStateMachineTransition_qc4jr")]
+graph_offset = Vector2(-301.11765, 4.0683274)
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_gb1oi"]
+animation = &"look left"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ahfky"]
+animation = &"look right"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_qc4jr"]
+animation = &"chilling"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_sokhu"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_gb1oi")
+blend_point_0/pos = 2.1000001
+blend_point_1/node = SubResource("AnimationNodeAnimation_ahfky")
+blend_point_1/pos = -2.1000001
+blend_point_2/node = SubResource("AnimationNodeAnimation_qc4jr")
+blend_point_2/pos = 0.0
+min_space = -2.1
+max_space = 2.1
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_qc4jr"]
+graph_offset = Vector2(-524.7605, 281.97415)
+nodes/output/position = Vector2(300, 140)
+"nodes/animation states/node" = SubResource("AnimationNodeStateMachine_ahfky")
+"nodes/animation states/position" = Vector2(-160, 120)
+nodes/Blend2/node = SubResource("AnimationNodeBlend2_4ssf0")
+nodes/Blend2/position = Vector2(120, 160)
+"nodes/looking around/node" = SubResource("AnimationNodeBlendSpace1D_sokhu")
+"nodes/looking around/position" = Vector2(-180, 480)
+node_connections = [&"output", 0, &"Blend2", &"Blend2", 0, &"animation states", &"Blend2", 1, &"looking around"]
+
 [node name="herder_scene" type="Node3D" unique_id=571143864]
 
 [node name="cam_base" type="Node3D" parent="." unique_id=1943998196]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 1.5, 0)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
 
 [node name="cam_rot" type="Node3D" parent="cam_base" unique_id=1043605417]
 
@@ -66,19 +159,43 @@ transform = Transform3D(0.8794408, 0.14315106, -0.45397323, -0.16504131, 0.98624
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="cam_base/cam_rot" unique_id=1165414428]
 
-[node name="herder" type="CharacterBody3D" parent="." unique_id=1530248349 node_paths=PackedStringArray("cam", "cam_base", "cam_rot")]
+[node name="herder" type="CharacterBody3D" parent="." unique_id=1530248349 node_paths=PackedStringArray("cam", "cam_base", "cam_rot", "animation_tree")]
 script = ExtResource("1_f4ovj")
 cam = NodePath("../cam_base/cam_rot/SpringArm3D/d_camera")
 cam_base = NodePath("../cam_base")
 cam_rot = NodePath("../cam_base/cam_rot")
+animation_tree = NodePath("../herder model animation tree")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="herder" unique_id=1938221635]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.04972428, 0.8364049, 0.016008213)
 shape = SubResource("BoxShape3D_exm3w")
 
-[node name="model" type="MeshInstance3D" parent="herder" unique_id=1788574683]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.057714403, 0.8141601, 0.01661992)
-mesh = SubResource("BoxMesh_ley1s")
-
 [node name="AnimationPlayer" type="AnimationPlayer" parent="herder" unique_id=1819735987]
 libraries/ = SubResource("AnimationLibrary_d3d77")
+
+[node name="herda2" parent="herder" unique_id=1981447063 instance=ExtResource("2_4ssf0")]
+
+[node name="Skeleton3D" parent="herder/herda2/herda" parent_id_path=PackedInt32Array(1981447063, 1143217239) index="0" unique_id=319779439]
+bones/3/rotation = Quaternion(1.4586419e-07, -1.8303949e-08, 0.4649063, 0.88535994)
+bones/4/rotation = Quaternion(1.2821796e-08, -6.378073e-08, 0.03219638, 0.99948156)
+bones/6/rotation = Quaternion(-0.22112887, 0.15023197, -0.4907925, 0.82924974)
+bones/7/rotation = Quaternion(-0.508896, 0.022357248, -0.068365924, 0.85781765)
+bones/9/position = Vector3(0.12097986, 0.5735249, 8.0625135e-08)
+bones/9/rotation = Quaternion(1.4206668e-05, -1.2029041e-07, 0.9999945, -0.0033098953)
+bones/10/rotation = Quaternion(4.0814538e-07, 6.5129138e-09, 0.006397572, 0.99997956)
+bones/11/position = Vector3(-0.13250704, 0.575872, 8.0309704e-08)
+bones/11/rotation = Quaternion(1.419526e-05, -1.204032e-07, 0.9999945, -0.0033099067)
+bones/12/rotation = Quaternion(4.0740292e-07, 9.962684e-08, 0.0063975444, 0.99997956)
+
+[node name="onderarm r" parent="herder/herda2/herda/Skeleton3D" index="0" unique_id=2052373752]
+transform = Transform3D(-0.9955215, -0.06938656, 0.06420716, -0.06668965, 0.03407201, -0.9971919, 0.06700405, -0.9970078, -0.03854692, 0.31732526, 0.7293947, -0.17974676)
+
+[node name="herder model animation tree" type="AnimationTree" parent="." unique_id=474581534]
+root_node = NodePath("../herder/herda2")
+tree_root = SubResource("AnimationNodeBlendTree_qc4jr")
+advance_expression_base_node = NodePath("../herder")
+anim_player = NodePath("../herder/herda2/AnimationPlayer")
+parameters/Blend2/blend_amount = 1.0
+"parameters/looking around/blend_position" = 0.0
+
+[editable path="herder/herda2"]

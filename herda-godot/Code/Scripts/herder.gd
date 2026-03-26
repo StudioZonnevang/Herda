@@ -5,12 +5,16 @@ const CAMERA_X_ROT_MIN: float = deg_to_rad(-79.9)
 const CAMERA_X_ROT_MAX: float = deg_to_rad(110.0) 
 const TURN_SPEED: float = 6
 
-@export var v_walk: float = 10
-@export var v_backwards: float = 2
+@export var v_walk: float = 2
+@export var v_backwards: float = 1
 
 @export var cam: Camera3D
 @export var cam_base: Node3D
 @export var cam_rot: Node3D
+
+@export var animation_tree: AnimationTree
+var state_machine: AnimationNodeStateMachinePlayback
+var looking = 0.0
 
 @onready var player: AnimationPlayer = find_child("AnimationPlayer")
 
@@ -19,6 +23,7 @@ var walk_vector = Vector3(0,0,0)
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	state_machine = animation_tree.get("parameters/animation states/playback")
 
 func _physics_process(delta: float) -> void:
 	set_velocity(Vector3(walk_vector.x, walk_vector.y, walk_vector.z)) # can add gravity etc here
@@ -37,6 +42,13 @@ func _process(delta: float) -> void:
 		rotation.y += atc * TURN_SPEED * delta
 	else:
 		walk_vector = Vector3(0.0,0.0,0.0)
+	
+	#look around
+	var atc = cam_base.rotation.y - rotation.y # angle to camera
+	if abs(atc) > PI: atc = atc + (2*PI if atc < 0 else -2*PI)
+	looking += (clampf(atc, -2.1, 2.1) - looking) * delta * 10
+	animation_tree.set("parameters/looking around/blend_position", looking)
+	
 	cam_base.global_position = global_position + Vector3.UP * 1.5
 
 # camera controls
@@ -45,7 +57,7 @@ func _input(event: InputEvent) -> void:
 		var camera_speed_this_frame = MOUSE_SENSITIVITY
 		rotate_camera(event.screen_relative * camera_speed_this_frame)
 	if Input.is_action_just_pressed("nudge"):
-		player.play("nudge")
+		state_machine.travel("shove")
 	if Input.is_action_just_pressed("reset"):
 		get_tree().reload_current_scene()
 

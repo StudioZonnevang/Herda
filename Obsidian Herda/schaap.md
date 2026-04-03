@@ -1,7 +1,7 @@
 #wiki 
 *game entity / character type* 
 
-# Schaap gedrag
+# Schaap behaviour
 Schaap gedrag is complex. To choose an action, they first evaluate which of their basic *[[#behoefte]]* takes priority. For each *behoefte* there is a corresponding logic tree they follow which ends in determining their final *[[#action]]*. [[#Movement]] actions have special logic.
 
 ## Behoefte

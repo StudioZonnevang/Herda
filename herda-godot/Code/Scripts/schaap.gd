@@ -5,16 +5,32 @@ extends Node3D
 
 @onready var body : MeshInstance3D = find_child("Body")
 
+### Schaap movement ###
 var speed : float
 @export var max_speed : float = 30
-@export var TURN_SPEED : float = 6
+@export var turn_speed : float = 6
 
 var separation : float #=high when high hunger, low speed
 var alignment : float #=high when high energy, low hunger, high speed
 var cohesion : float #=high when large distance, high speed
 
-var energy : float
-var hunger : float
+### Schaap behoeftes ###
+var behoefte_voeding : float
+var behoefte_persoonlijke_ruimte : float
+var behoefte_gezelligheid : float
+
+### Schaap eigenschap ###
+enum kudde_staat {bewegend, rust}
+enum sekse {jonge_ooi, volwassen_ooi, jonge_ram, volwassen_ram}
+var waargenomen_kudde_staat = kudde_staat.rust
+var gebroken : bool
+var wolligheid : float
+var pensvolheid : float
+var eigen_sekse
+var ziektes = []
+
+### Schapen array
+@onready var alle_schapen = get_parent().get_children()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -22,11 +38,39 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	speed += 0.01
-	if (show_debug_material):
-		colour_sheep(speed, max_speed)
-		orient_sheep(Vector3(20,20,20), delta)
+	# behoeftes updaten
+	update_behoefte_voeding()
+	update_behoefte_persoonlijke_ruimte()
+	update_behoefte_gezelligheid()
+	
+	match [behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max() : 
+		behoefte_voeding : voeding_logica()
+		behoefte_persoonlijke_ruimte : persoonlijke_ruimte_logica()
+		behoefte_gezelligheid : gezelligheid_logica()
+	
+	
+
+# bepaald de dringendheid van de behoefte
+func update_behoefte_voeding() -> void:
 	pass
+
+func update_behoefte_persoonlijke_ruimte() -> void:
+	pass
+
+func update_behoefte_gezelligheid() -> void:
+	pass
+
+# bepaald de manier waarop de behoefte vervuld wordt
+func voeding_logica() -> void:
+	pass
+
+func persoonlijke_ruimte_logica() -> void:
+	pass
+
+func gezelligheid_logica() -> void:
+	pass
+
+### Utilities ###
 
 func calculate_speed() -> float:
 	# takes group speed 
@@ -34,31 +78,20 @@ func calculate_speed() -> float:
 	new_speed = clampf(new_speed, 0, max_speed)
 	return new_speed
 
-func move_sheep() -> void:
+func schaap_verplaatsen(direction) -> void:
 	# We need speed, direction, correct orientation
 	return
 
-func calculate_new_orientation(direction) -> float:
-	# take direction 
-	# take current orientation
-	# calculate difference = target
-	var target_rotation : float = 180
-	return target_rotation
-
-func orient_sheep(direction, delta) -> void:
-	# We need the current orientation and target orientation
-	# get_parent_node_3d().rotation.y = lerp(0, 180, delta * 0.2)
-	
-	var vector_to_target = cam.target_coordinate - global_position
+func schaap_orienteren(target : Vector3, delta : float) -> void: 
+	var vector_to_target = target - global_position
 	var angle_to_target = Vector2(vector_to_target.x, vector_to_target.z).angle() + 0.5*PI
 	var atc =  -angle_to_target - global_rotation.y#deg_to_rad(direction.y)
 	if abs(atc) > PI: atc = atc + (2*PI if atc < 0 else -2*PI)
-	rotation.y += atc * TURN_SPEED * delta
+	rotation.y += atc * turn_speed * delta
 	print(atc)
 
-func colour_sheep(measured_variable, max_variable = 1) -> void:
+func schaap_kleuren(measured_variable, max_variable = 1) -> void:
 	var material = body.get_active_material(0)
-	# red corresponds with speed
 	var debug_red_value = remap(measured_variable, 0, max_variable, 0, 1)
 	material.albedo_color = Color(debug_red_value, 0.5, 0.5)
 	body.set_surface_override_material(0, material)

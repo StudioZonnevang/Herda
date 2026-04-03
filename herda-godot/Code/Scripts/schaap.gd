@@ -31,6 +31,7 @@ var ziektes = []
 
 ### Schapen array
 @onready var alle_schapen = get_parent().get_children()
+var waargenomen_schapen = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -38,24 +39,41 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	update_waargenomen_schapen()
+	
 	# behoeftes updaten
 	update_behoefte_voeding()
 	update_behoefte_persoonlijke_ruimte()
 	update_behoefte_gezelligheid()
 	
+	# FOR DEBUGGING
+	behoefte_persoonlijke_ruimte = 1.0
+	
 	match [behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max() : 
 		behoefte_voeding : voeding_logica()
 		behoefte_persoonlijke_ruimte : persoonlijke_ruimte_logica()
 		behoefte_gezelligheid : gezelligheid_logica()
-	
-	
+
+# welke schapen neemt het schaap waar. hoeft mss niet elk frame.
+func update_waargenomen_schapen() -> void:
+	waargenomen_schapen = []
+	var space = get_world_3d().direct_space_state
+	for schaap in alle_schapen:
+		#near 360 degree vision so no view cone.
+		if schaap == self: continue
+		
+		var target_coordinates = schaap.global_position
+		var hit = space.intersect_ray(
+			PhysicsRayQueryParameters3D.create(global_position, target_coordinates))
+		if !hit or hit.collider == schaap:
+			waargenomen_schapen.append(schaap)
 
 # bepaald de dringendheid van de behoefte
 func update_behoefte_voeding() -> void:
 	pass
 
 func update_behoefte_persoonlijke_ruimte() -> void:
-	pass
+	var irritatiebronnen = []
 
 func update_behoefte_gezelligheid() -> void:
 	pass

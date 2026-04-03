@@ -2,7 +2,7 @@
 *game entity / character type* 
 
 # Schaap behaviour
-Schaap gedrag is complex. To choose an action, they first evaluate which of their basic *[[#behoefte]]* takes priority. For each *behoefte* there is a corresponding logic tree they follow which ends in determining their final *[[#action]]*. [[#Movement]] actions have special logic.
+Schaap behaviour is complex. To choose an action, they first evaluate which of their basic *[[#behoefte]]* takes priority. For each *behoefte* there is a corresponding logic tree they follow which ends in determining their final *[[#action]]*. [[#Movement]] actions have special logic.
 
 ## Behoefte
 - [[#Voeding]]
@@ -11,7 +11,7 @@ Schaap gedrag is complex. To choose an action, they first evaluate which of thei
 
 ## Other behavioural properties
 Schapen also keep track of other variables that influence their behaviour indirectly:
-- Perceived state of kudde
+- Waargenomen staat van kudde
 - Gebroken
 - Wolligheid
 - Pensvolheid

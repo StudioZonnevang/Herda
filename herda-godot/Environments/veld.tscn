@@ -72,26 +72,34 @@ size = Vector3(4.3100586, 2.0805054, 5.7958984)
 
 [node name="schapen" type="Node3D" parent="." unique_id=1378710940]
 
-[node name="Schaap" parent="schapen" unique_id=267504549 instance=ExtResource("2_kiesj")]
+[node name="Schaap" parent="schapen" unique_id=267504549 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.004660069, 0, -0.99998915, 0, 1, 0, 0.99998915, 0, 0.004660069, -3.2685547, 0.45422363, 1.6965332)
+herder_scene = NodePath("../../herder_scene")
 
-[node name="Schaap4" parent="schapen" unique_id=670988552 instance=ExtResource("2_kiesj")]
+[node name="Schaap4" parent="schapen" unique_id=670988552 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.7903155, 0, -0.61270016, 0, 1, 0, 0.61270016, 0, 0.7903155, -3.083496, 0.45422363, 4.8344727)
+herder_scene = NodePath("../../herder_scene")
 
-[node name="Schaap5" parent="schapen" unique_id=32996501 instance=ExtResource("2_kiesj")]
+[node name="Schaap5" parent="schapen" unique_id=32996501 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.007277906, 0, 0.99997354, 0, 1, 0, -0.99997354, 0, 0.007277906, -0.67785645, 0.45422363, -3.63385)
+herder_scene = NodePath("../../herder_scene")
 
-[node name="Schaap6" parent="schapen" unique_id=655873081 instance=ExtResource("2_kiesj")]
+[node name="Schaap6" parent="schapen" unique_id=655873081 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.8752451, 0, 0.48367968, 0, 1, 0, -0.48367968, 0, 0.8752451, 5.131836, 0.45422363, -2.326294)
+herder_scene = NodePath("../../herder_scene")
 
-[node name="Schaap7" parent="schapen" unique_id=459055785 instance=ExtResource("2_kiesj")]
+[node name="Schaap7" parent="schapen" unique_id=459055785 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
 transform = Transform3D(-0.7741387, 0, 0.63301605, 0, 1, 0, -0.63301605, 0, -0.7741387, 2.4763184, 0.45422363, -2.2089233)
+herder_scene = NodePath("../../herder_scene")
 
-[node name="Schaap8" parent="schapen" unique_id=776454124 instance=ExtResource("2_kiesj")]
+[node name="Schaap8" parent="schapen" unique_id=776454124 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
 transform = Transform3D(-0.8359223, 0, -0.5488478, 0, 1, 0, 0.5488478, 0, -0.8359223, 1.1546631, 0.45422363, -7.020996)
+herder_scene = NodePath("../../herder_scene")
 
-[node name="Schaap2" parent="schapen" unique_id=1086239353 instance=ExtResource("2_kiesj")]
+[node name="Schaap2" parent="schapen" unique_id=1086239353 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.8267273, 0, 0.56260294, 0, 1, 0, -0.56260294, 0, 0.8267273, 2.6427002, 0.45422363, 1.6218872)
+herder_scene = NodePath("../../herder_scene")
 
-[node name="Schaap3" parent="schapen" unique_id=1183785107 instance=ExtResource("2_kiesj")]
+[node name="Schaap3" parent="schapen" unique_id=1183785107 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.45509425, 0, -0.8904433, 0, 1, 0, 0.8904433, 0, 0.45509425, 0.49694824, 0.45422363, 4.5443726)
+herder_scene = NodePath("../../herder_scene")

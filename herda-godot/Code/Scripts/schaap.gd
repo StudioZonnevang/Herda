@@ -1,5 +1,7 @@
+class_name schaap
 extends Node3D
 
+@export var herder_scene: Node3D
 @export var show_debug_material : bool = true 
 @export var cam: Camera3D
 
@@ -8,7 +10,15 @@ extends Node3D
 ### Schaap movement ###
 var speed : float
 @export var max_speed : float = 30
-@export var turn_speed : float = 6
+@export var turn_speed : float = 1
+
+@export var behoefte_persoonlijke_ruimte_falloff: float = 0.5
+@export var irritatie_afstanden = {
+	"herder_rust": 6,
+	"herder_lopend": 5,
+	"schaap_rust": 3,
+	"schaap_lopend": 1
+}
 
 var separation : float #=high when high hunger, low speed
 var alignment : float #=high when high energy, low hunger, high speed
@@ -31,11 +41,15 @@ var ziektes = []
 
 ### Schapen array
 @onready var alle_schapen = get_parent().get_children()
+var mijn_herder: CharacterBody3D
 var waargenomen_schapen = []
+var irritatiebronnen = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	if(herder_scene != null):
+		mijn_herder = herder_scene.find_child("herder")
+		
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -46,34 +60,40 @@ func _process(delta: float) -> void:
 	update_behoefte_persoonlijke_ruimte()
 	update_behoefte_gezelligheid()
 	
-	# FOR DEBUGGING
-	behoefte_persoonlijke_ruimte = 1.0
-	
 	match [behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max() : 
 		behoefte_voeding : voeding_logica()
-		behoefte_persoonlijke_ruimte : persoonlijke_ruimte_logica()
+		behoefte_persoonlijke_ruimte : persoonlijke_ruimte_logica(delta)
 		behoefte_gezelligheid : gezelligheid_logica()
 
 # welke schapen neemt het schaap waar. hoeft mss niet elk frame.
 func update_waargenomen_schapen() -> void:
 	waargenomen_schapen = []
 	var space = get_world_3d().direct_space_state
-	for schaap in alle_schapen:
+	for schaapje in alle_schapen:
 		#near 360 degree vision so no view cone.
-		if schaap == self: continue
+		if schaapje == self: continue
 		
-		var target_coordinates = schaap.global_position
+		var target_coordinates = schaapje.global_position
 		var hit = space.intersect_ray(
 			PhysicsRayQueryParameters3D.create(global_position, target_coordinates))
-		if !hit or hit.collider == schaap:
-			waargenomen_schapen.append(schaap)
+		if !hit or hit.collider == schaapje:
+			waargenomen_schapen.append(schaapje)
 
 # bepaald de dringendheid van de behoefte
 func update_behoefte_voeding() -> void:
 	pass
 
 func update_behoefte_persoonlijke_ruimte() -> void:
-	var irritatiebronnen = []
+	irritatiebronnen = []
+	var bronnen_totaal = waargenomen_schapen
+	if mijn_herder != null: bronnen_totaal += [mijn_herder]
+	var irritatie_totaal = 0
+	for irritatiebron in bronnen_totaal:
+		var irritatie = get_irritatie(irritatiebron)
+		if irritatie == 0: continue
+		irritatiebronnen.append({"bron": irritatiebron, "irritatie": irritatie})
+		irritatie_totaal += irritatie
+	behoefte_persoonlijke_ruimte = 1 - 1 / sqrt(behoefte_persoonlijke_ruimte_falloff * irritatie_totaal + 1)
 
 func update_behoefte_gezelligheid() -> void:
 	pass
@@ -82,13 +102,28 @@ func update_behoefte_gezelligheid() -> void:
 func voeding_logica() -> void:
 	pass
 
-func persoonlijke_ruimte_logica() -> void:
-	pass
+func persoonlijke_ruimte_logica(delta) -> void:
+	var run_direction = Vector2(0,0)
+	for irritatiebron in irritatiebronnen:
+		var dir = (global_position - irritatiebron.bron.global_position) * irritatiebron.irritatie
+		run_direction += Vector2(dir.x, dir.z)
+	run_direction = run_direction.normalized()
+	
+	# this can then feed into the verplaatsing function which also looks at other movement goals.
+	# for now im just making them turn straight away and run
+	
+	schaap_orienteren(global_position + Vector3(run_direction.x, 0, run_direction.y), delta)
+	schaap_verplaatsen(delta)
 
 func gezelligheid_logica() -> void:
 	pass
 
 ### Utilities ###
+
+func get_irritatie(irritatiebron) -> float:
+	var afstand = global_position.distance_squared_to(irritatiebron.global_position)
+	var irritatie_afstand = irritatie_afstanden[irritatiebron.get_script().get_global_name() + "_" + kudde_staat.keys()[waargenomen_kudde_staat]]
+	return 0 if afstand > irritatie_afstand else (irritatie_afstand - afstand) / irritatie_afstand
 
 func calculate_speed() -> float:
 	# takes group speed 
@@ -96,9 +131,9 @@ func calculate_speed() -> float:
 	new_speed = clampf(new_speed, 0, max_speed)
 	return new_speed
 
-func schaap_verplaatsen(direction) -> void:
+func schaap_verplaatsen(delta) -> void:
 	# We need speed, direction, correct orientation
-	return
+	global_position += transform.basis.z * -max_speed * delta * [behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max()
 
 func schaap_orienteren(target : Vector3, delta : float) -> void: 
 	var vector_to_target = target - global_position
@@ -106,7 +141,6 @@ func schaap_orienteren(target : Vector3, delta : float) -> void:
 	var atc =  -angle_to_target - global_rotation.y#deg_to_rad(direction.y)
 	if abs(atc) > PI: atc = atc + (2*PI if atc < 0 else -2*PI)
 	rotation.y += atc * turn_speed * delta
-	print(atc)
 
 func schaap_kleuren(measured_variable, max_variable = 1) -> void:
 	var material = body.get_active_material(0)

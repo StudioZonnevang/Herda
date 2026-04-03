@@ -36,6 +36,20 @@
             }
           },
           {
+            "id": "86999d0706ff9e64",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "schaap.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "schaap"
+            }
+          },
+          {
             "id": "034c646b23127768",
             "type": "leaf",
             "state": {
@@ -77,7 +91,8 @@
               "title": "project scope"
             }
           }
-        ]
+        ],
+        "currentTab": 2
       }
     ],
     "direction": "vertical"
@@ -257,14 +272,14 @@
       "bases:Create new base": false
     }
   },
-  "active": "2f9e3879638d157e",
+  "active": "86999d0706ff9e64",
   "lastOpenFiles": [
-    "project planning.md",
-    "stretch goal mechanics.md",
+    "herding mechanic.md",
     "herder.md",
     "bibliography.md",
+    "stretch goal mechanics.md",
+    "project planning.md",
     "schaap.md",
-    "herding mechanic.md",
     "sander planning.md",
     "david planning.md",
     "sheep.md",

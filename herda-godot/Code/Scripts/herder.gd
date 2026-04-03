@@ -1,3 +1,4 @@
+class_name herder
 extends CharacterBody3D
 
 const MOUSE_SENSITIVITY: float = 0.003
@@ -25,7 +26,7 @@ func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	state_machine = animation_tree.get("parameters/animation states/playback")
 
-func _physics_process(delta: float) -> void:
+func _physics_process(_delta: float) -> void:
 	set_velocity(Vector3(walk_vector.x, walk_vector.y, walk_vector.z)) # can add gravity etc here
 	move_and_slide()
 
@@ -44,9 +45,9 @@ func _process(delta: float) -> void:
 		walk_vector = Vector3(0.0,0.0,0.0)
 	
 	#look around
-	var atc = cam_base.rotation.y - rotation.y # angle to camera
-	if abs(atc) > PI: atc = atc + (2*PI if atc < 0 else -2*PI)
-	looking += (clampf(atc, -2.1, 2.1) - looking) * delta * 10
+	var atc_anim = cam_base.rotation.y - rotation.y # angle to camera
+	if abs(atc_anim) > PI: atc_anim = atc_anim + (2*PI if atc_anim < 0 else -2*PI)
+	looking += (clampf(atc_anim, -2.1, 2.1) - looking) * delta * 10
 	animation_tree.set("parameters/looking around/blend_position", looking)
 	
 	cam_base.global_position = global_position + Vector3.UP * 1.5

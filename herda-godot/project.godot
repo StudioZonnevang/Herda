@@ -15,10 +15,6 @@ run/main_scene="uid://bb1f7k55loof7"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 config/icon="res://icon.svg"
 
-[display]
-
-window/size/mode=2
-
 [input]
 
 reset={

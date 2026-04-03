@@ -1,9 +1,11 @@
 [gd_scene format=3 uid="uid://cgjykwmnlei37"]
 
 [ext_resource type="Material" uid="uid://qyc42iv8faw0" path="res://Materials/test-orm-material-sander.tres" id="1_2iirl"]
+[ext_resource type="Script" uid="uid://djfu051k63haf" path="res://Code/Scripts/rays_schieten.gd" id="1_hqcfl"]
 [ext_resource type="Script" uid="uid://dn1pe206fribm" path="res://Code/Scripts/test-script-sander.gd" id="1_r3rrw"]
 [ext_resource type="PackedScene" uid="uid://sojjsu43qbrg" path="res://Prefabs/test-item.tscn" id="3_ayitv"]
 [ext_resource type="PackedScene" uid="uid://cgb4u6fgjtacl" path="res://Prefabs/schaap.tscn" id="4_6yfuc"]
+[ext_resource type="Material" uid="uid://ltecfd50t77k" path="res://Materials/test-material-sander.tres" id="6_oulw3"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_iygvv"]
 sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
@@ -19,6 +21,11 @@ tonemap_mode = 2
 
 [sub_resource type="SphereMesh" id="SphereMesh_iygvv"]
 
+[sub_resource type="SphereMesh" id="SphereMesh_vb6c1"]
+material = ExtResource("6_oulw3")
+radius = 0.05
+height = 0.1
+
 [node name="Node3D" type="Node3D" unique_id=46494462]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=12373418]
@@ -28,8 +35,10 @@ environment = SubResource("Environment_2iirl")
 transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 4.9298153, 0)
 shadow_enabled = true
 
-[node name="Camera3D" type="Camera3D" parent="." unique_id=1261021616]
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1261021616 node_paths=PackedStringArray("debug_sphere")]
 transform = Transform3D(0.5550332, -0.31045035, 0.7717245, 0, 0.9277451, 0.37321448, -0.83182824, -0.20714642, 0.5149293, 6.5645547, 2.9698334, 5.3175554)
+script = ExtResource("1_hqcfl")
+debug_sphere = NodePath("../Debug_sphere")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1613617131]
 transform = Transform3D(1.3854771, 0, 0, 0, 1.3854771, 0, 0, 0, 3.0006697, -1.1605601, 2.3841858e-07, -0.41953945)
@@ -54,5 +63,9 @@ height = 1.1337891
 [node name="Node3D" parent="." unique_id=598430023 instance=ExtResource("3_ayitv")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.34258938, -0.25958204, -0.1592685)
 
-[node name="Sheep" parent="." unique_id=267504549 instance=ExtResource("4_6yfuc")]
+[node name="Sheep" parent="." unique_id=267504549 node_paths=PackedStringArray("cam") instance=ExtResource("4_6yfuc")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.0028813, -0.25958246, 0.20088398)
+cam = NodePath("../Camera3D")
+
+[node name="Debug_sphere" type="MeshInstance3D" parent="." unique_id=488591160]
+mesh = SubResource("SphereMesh_vb6c1")

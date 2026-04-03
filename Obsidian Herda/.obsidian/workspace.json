@@ -131,8 +131,7 @@
               "title": "Bookmarks"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       },
       {
         "id": "2bb6109ad793fd01",
@@ -258,7 +257,7 @@
       "bases:Create new base": false
     }
   },
-  "active": "25f1e069554bf786",
+  "active": "2f9e3879638d157e",
   "lastOpenFiles": [
     "project planning.md",
     "stretch goal mechanics.md",

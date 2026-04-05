@@ -64,9 +64,6 @@ func _process(delta: float) -> void:
 	update_behoefte_persoonlijke_ruimte()
 	update_behoefte_gezelligheid()
 	
-	if(name == "Schaap"):
-		print(behoefte_voeding, " ", behoefte_persoonlijke_ruimte)
-	
 	match [0.01, behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max() : 
 		behoefte_voeding : voeding_logica()
 		behoefte_persoonlijke_ruimte : persoonlijke_ruimte_logica(delta)

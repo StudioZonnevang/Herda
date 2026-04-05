@@ -9,7 +9,7 @@ func _ready() -> void:
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	var space = get_world_3d().direct_space_state
 	var target_coordinates = project_ray_normal(get_viewport().get_mouse_position())
 	var hit = space.intersect_ray(

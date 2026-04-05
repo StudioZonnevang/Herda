@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://de26yl4on824j"]
+[gd_scene format=3 uid="uid://ca1f6b6qbyfvx"]
 
 [ext_resource type="Texture2D" uid="uid://ddvdpya5ne1dv" path="res://icon.svg" id="1_eihmm"]
 [ext_resource type="Script" uid="uid://djfu051k63haf" path="res://Code/Scripts/rays_schieten.gd" id="2_rbvbe"]

@@ -2,8 +2,10 @@ class_name schaap
 extends Node3D
 
 @export var herder_scene: Node3D
-@export var show_debug_material : bool = true 
+@export var debug_mode : bool = true 
 @export var cam: Camera3D
+@export var debug_label : Label3D
+var debug_text = []
 
 @onready var body : MeshInstance3D = find_child("Body")
 
@@ -64,6 +66,9 @@ func _process(delta: float) -> void:
 		behoefte_voeding : voeding_logica()
 		behoefte_persoonlijke_ruimte : persoonlijke_ruimte_logica(delta)
 		behoefte_gezelligheid : gezelligheid_logica()
+	
+	if debug_mode:
+		update_debug_panel()
 
 # welke schapen neemt het schaap waar. hoeft mss niet elk frame.
 func update_waargenomen_schapen() -> void:
@@ -81,7 +86,11 @@ func update_waargenomen_schapen() -> void:
 
 # bepaald de dringendheid van de behoefte
 func update_behoefte_voeding() -> void:
-	pass
+	if (behoefte_voeding < 1):
+		behoefte_voeding += (1.0 / 10000.0)
+	else:
+		# shaap gaat dood
+		pass
 
 func update_behoefte_persoonlijke_ruimte() -> void:
 	irritatiebronnen = []
@@ -96,7 +105,43 @@ func update_behoefte_persoonlijke_ruimte() -> void:
 	behoefte_persoonlijke_ruimte = 1 - 1 / sqrt(behoefte_persoonlijke_ruimte_falloff * irritatie_totaal + 1)
 
 func update_behoefte_gezelligheid() -> void:
-	pass
+	# benodigde drijfveren voor gezelligheid
+	var aantal_waargenomen_schapen : int = waargenomen_schapen.size()
+	var afstand_tot_kudde_centrum : float = 0
+	var gemiddelde_afstand_dichtstbijzijnde_schapen : float = 0
+	#var eenzame_tijd_verstreken : float
+	
+	# ondersteunende variabelen
+	var dichtstbijzijnde_schapen = []
+	var waargenomen_kudde_centrum : Vector3
+	for i in waargenomen_schapen:
+		var afstand = position.distance_to(i.position)
+		dichtstbijzijnde_schapen.append([i, afstand])
+		afstand_tot_kudde_centrum += afstand
+		waargenomen_kudde_centrum.x += i.position.x
+		waargenomen_kudde_centrum.y += i.position.y
+		waargenomen_kudde_centrum.z += i.position.z
+	waargenomen_kudde_centrum.x = waargenomen_kudde_centrum.x / waargenomen_schapen.size()
+	waargenomen_kudde_centrum.y = waargenomen_kudde_centrum.y / waargenomen_schapen.size()
+	waargenomen_kudde_centrum.z = waargenomen_kudde_centrum.z / waargenomen_schapen.size()
+	
+	afstand_tot_kudde_centrum = afstand_tot_kudde_centrum / waargenomen_schapen.size()#position.distance_to(waargenomen_kudde_centrum)
+	
+	dichtstbijzijnde_schapen.sort_custom(func(a, b): return a[1] > b[1])
+	var minimale_kudde_hoeveelheid: int = 5 #afhankelijk van een soort "loner" / "volgzaamheid" variable?
+	var aantal_schapen_dichtbij: int = min(minimale_kudde_hoeveelheid, dichtstbijzijnde_schapen.size())
+	var max_gezichtveld_schaap: float = 100.0
+	for i in aantal_schapen_dichtbij:
+		gemiddelde_afstand_dichtstbijzijnde_schapen += position.distance_to(dichtstbijzijnde_schapen[i][0].position)
+	gemiddelde_afstand_dichtstbijzijnde_schapen = gemiddelde_afstand_dichtstbijzijnde_schapen / aantal_schapen_dichtbij
+	var ervaren_afstand_dichtstbijzijnde_schapen = (
+			gemiddelde_afstand_dichtstbijzijnde_schapen + 
+			max_gezichtveld_schaap * 
+			(minimale_kudde_hoeveelheid - aantal_schapen_dichtbij))
+	
+	add_to_debug_panel("Waargenomen schapen: ", aantal_waargenomen_schapen)
+	add_to_debug_panel("Ervaren afstand tot dichtstbijzijnde schapen: ", ervaren_afstand_dichtstbijzijnde_schapen)
+	add_to_debug_panel("Afstand tot waargenomen kudde centrum: ", afstand_tot_kudde_centrum)
 
 # bepaald de manier waarop de behoefte vervuld wordt
 func voeding_logica() -> void:
@@ -142,8 +187,22 @@ func schaap_orienteren(target : Vector3, delta : float) -> void:
 	if abs(atc) > PI: atc = atc + (2*PI if atc < 0 else -2*PI)
 	rotation.y += atc * turn_speed * delta
 
+### Debugging ###
+
 func schaap_kleuren(measured_variable, max_variable = 1) -> void:
 	var material = body.get_active_material(0)
 	var debug_red_value = remap(measured_variable, 0, max_variable, 0, 1)
 	material.albedo_color = Color(debug_red_value, 0.5, 0.5)
 	body.set_surface_override_material(0, material)
+
+func add_to_debug_panel(variabel_naam : String, variabel_waarde) -> void:
+	var regel : String = variabel_naam + str(variabel_waarde)
+	debug_text.append(regel)
+
+func update_debug_panel() -> void:
+	var text : String = ""
+	#if debug_text: text = debug_text[1]
+	for i in debug_text.size():
+		text = text + "\n" + str(debug_text[i])
+	debug_label.text = text
+	debug_text.clear()

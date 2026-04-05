@@ -14,6 +14,8 @@ var speed : float
 @export var max_speed : float = 30
 @export var turn_speed : float = 1
 
+@export var honger_increment: float = 0.001 # 0.001 = 0.1% per second
+
 @export var behoefte_persoonlijke_ruimte_falloff: float = 0.5
 @export var irritatie_afstanden = {
 	"herder_rust": 6,
@@ -58,11 +60,14 @@ func _process(delta: float) -> void:
 	update_waargenomen_schapen()
 	
 	# behoeftes updaten
-	update_behoefte_voeding()
+	update_behoefte_voeding(delta)
 	update_behoefte_persoonlijke_ruimte()
 	update_behoefte_gezelligheid()
 	
-	match [behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max() : 
+	if(name == "Schaap"):
+		print(behoefte_voeding, " ", behoefte_persoonlijke_ruimte)
+	
+	match [0.01, behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max() : 
 		behoefte_voeding : voeding_logica()
 		behoefte_persoonlijke_ruimte : persoonlijke_ruimte_logica(delta)
 		behoefte_gezelligheid : gezelligheid_logica()
@@ -85,9 +90,9 @@ func update_waargenomen_schapen() -> void:
 			waargenomen_schapen.append(schaapje)
 
 # bepaald de dringendheid van de behoefte
-func update_behoefte_voeding() -> void:
+func update_behoefte_voeding(delta) -> void:
 	if (behoefte_voeding < 1):
-		behoefte_voeding += (1.0 / 10000.0)
+		behoefte_voeding += delta * honger_increment
 	else:
 		# shaap gaat dood
 		pass
@@ -145,7 +150,8 @@ func update_behoefte_gezelligheid() -> void:
 
 # bepaald de manier waarop de behoefte vervuld wordt
 func voeding_logica() -> void:
-	pass
+	# GRAZEN PLACEHOLDER:
+	behoefte_voeding = 0
 
 func persoonlijke_ruimte_logica(delta) -> void:
 	var run_direction = Vector2(0,0)

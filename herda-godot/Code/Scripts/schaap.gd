@@ -1,5 +1,5 @@
 class_name schaap
-extends Node3D
+extends CharacterBody3D
 
 @export var herder_scene: Node3D
 @export var debug_mode : bool = true 
@@ -13,6 +13,9 @@ var debug_text = []
 var speed : float
 @export var max_speed : float = 30
 @export var turn_speed : float = 1
+@export var schaap_acceleration: float = 1
+
+@export var minimum_behoefte: float = 0.01
 
 @export var honger_increment: float = 0.001 # 0.001 = 0.1% per second
 
@@ -53,7 +56,9 @@ var irritatiebronnen = []
 func _ready() -> void:
 	if(herder_scene != null):
 		mijn_herder = herder_scene.find_child("herder")
-		
+
+func _physics_process(delta: float) -> void:
+	move_and_slide()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -64,10 +69,11 @@ func _process(delta: float) -> void:
 	update_behoefte_persoonlijke_ruimte()
 	update_behoefte_gezelligheid()
 	
-	match [0.01, behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max() : 
+	match [minimum_behoefte, behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max() : 
 		behoefte_voeding : voeding_logica()
 		behoefte_persoonlijke_ruimte : persoonlijke_ruimte_logica(delta)
-		behoefte_gezelligheid : gezelligheid_logica()
+		behoefte_gezelligheid : gezelligheid_logica(delta)
+		minimum_behoefte: verplaatsen_gebied(delta)
 	
 	if debug_mode:
 		update_debug_panel()
@@ -91,7 +97,7 @@ func update_behoefte_voeding(delta) -> void:
 	if (behoefte_voeding < 1):
 		behoefte_voeding += delta * honger_increment
 	else:
-		# shaap gaat dood
+		# schaap gaat dood
 		pass
 
 func update_behoefte_persoonlijke_ruimte() -> void:
@@ -151,20 +157,45 @@ func voeding_logica() -> void:
 	behoefte_voeding = 0
 
 func persoonlijke_ruimte_logica(delta) -> void:
+	# is just a redirection now. movement logic is called from verplaatsen_gebied
+	# keep for now because i think we will need logic here later
+	verplaatsen_gebied(delta)
+
+func persoonlijke_ruimte_verplaatsing() -> Vector2:
+	if behoefte_persoonlijke_ruimte < minimum_behoefte: return Vector2(0,0)
+	
 	var run_direction = Vector2(0,0)
 	for irritatiebron in irritatiebronnen:
 		var dir = (global_position - irritatiebron.bron.global_position) * irritatiebron.irritatie
 		run_direction += Vector2(dir.x, dir.z)
-	run_direction = run_direction.normalized()
-	
-	# this can then feed into the verplaatsing function which also looks at other movement goals.
-	# for now im just making them turn straight away and run
-	
-	schaap_orienteren(global_position + Vector3(run_direction.x, 0, run_direction.y), delta)
-	schaap_verplaatsen(delta)
+	return run_direction
 
-func gezelligheid_logica() -> void:
-	pass
+func gezelligheid_logica(delta) -> void:
+	# is just a redirection now. see persoonlijke_ruimte_logica
+	verplaatsen_gebied(delta)
+
+func gezelligheid_verplaatsing() -> Vector2:
+	return Vector2(0,0)
+
+### Verplaatsing ###
+
+func verplaatsen_gebied(delta) -> void:
+	# General movement function: optimize position for different goals
+	var run_goal = Vector2(0,0)
+	
+	run_goal += persoonlijke_ruimte_verplaatsing()
+	run_goal += gezelligheid_verplaatsing()
+	
+	run_goal = run_goal.normalized()
+	
+	run_goal = Vector3(run_goal.x, 0, run_goal.y)
+	if(run_goal.length_squared() > 0):
+		schaap_orienteren(global_position - run_goal, delta)
+	velocity += (run_goal * max_speed * [behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max() - velocity) * delta * schaap_acceleration
+
+func verplaatsen_doel(goal, delta) -> void:
+	# We need speed, direction, correct orientation
+	global_position += transform.basis.z * -max_speed * delta * [behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max()
 
 ### Utilities ###
 
@@ -178,10 +209,6 @@ func calculate_speed() -> float:
 	var new_speed : float = speed + 0.01
 	new_speed = clampf(new_speed, 0, max_speed)
 	return new_speed
-
-func schaap_verplaatsen(delta) -> void:
-	# We need speed, direction, correct orientation
-	global_position += transform.basis.z * -max_speed * delta * [behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max()
 
 func schaap_orienteren(target : Vector3, delta : float) -> void: 
 	var vector_to_target = target - global_position

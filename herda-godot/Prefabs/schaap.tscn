@@ -5,7 +5,14 @@
 
 [sub_resource type="CapsuleMesh" id="CapsuleMesh_3k1mh"]
 
-[node name="Schaap" type="Node3D" unique_id=267504549 node_paths=PackedStringArray("debug_label")]
+[sub_resource type="BoxShape3D" id="BoxShape3D_v8lhw"]
+size = Vector3(0.6040039, 0.9840088, 1.303894)
+
+[sub_resource type="SphereMesh" id="SphereMesh_v8lhw"]
+radius = 0.4
+height = 0.8
+
+[node name="Schaap" type="CharacterBody3D" unique_id=258340122 node_paths=PackedStringArray("debug_label")]
 script = ExtResource("1_5i12d")
 debug_label = NodePath("Label3D")
 
@@ -18,3 +25,19 @@ surface_material_override/0 = ExtResource("1_3k1mh")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2538025, 0)
 text = "Schaap id:
 "
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1393164505]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.007080078, -0.003112793, 0.035614014)
+shape = SubResource("BoxShape3D_v8lhw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2092126818]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3034668, 0.9075012)
+mesh = SubResource("SphereMesh_v8lhw")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=1379439457]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.21569824, -0.21530533, -0.68237305)
+mesh = SubResource("SphereMesh_v8lhw")
+
+[node name="MeshInstance3D3" type="MeshInstance3D" parent="." unique_id=49331433]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16519165, -0.25610733, -0.68237305)
+mesh = SubResource("SphereMesh_v8lhw")

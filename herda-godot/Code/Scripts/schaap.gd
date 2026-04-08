@@ -194,8 +194,8 @@ func verplaatsen_gebied(delta) -> void:
 	velocity += (run_goal * max_speed * [behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max() - velocity) * delta * schaap_acceleration
 
 func verplaatsen_doel(goal, delta) -> void:
-	# We need speed, direction, correct orientation
-	global_position += transform.basis.z * -max_speed * delta * [behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max()
+	# THis needs actual pathfinding
+	pass
 
 ### Utilities ###
 

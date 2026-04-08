@@ -1,25 +1,141 @@
 [gd_scene format=3 uid="uid://cgb4u6fgjtacl"]
 
-[ext_resource type="Material" uid="uid://ch0net5hgvigx" path="res://Materials/schaap-material.tres" id="1_3k1mh"]
 [ext_resource type="Script" uid="uid://cd0dkjl7r6ngh" path="res://Code/Scripts/schaap.gd" id="1_5i12d"]
-
-[sub_resource type="CapsuleMesh" id="CapsuleMesh_3k1mh"]
+[ext_resource type="PackedScene" uid="uid://dx62qgb7p86t6" path="res://Models/schaap.glb" id="2_v8lhw"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_v8lhw"]
-size = Vector3(0.6040039, 0.9840088, 1.303894)
+size = Vector3(0.42633057, 0.8864136, 1.1478729)
 
-[sub_resource type="SphereMesh" id="SphereMesh_v8lhw"]
-radius = 0.4
-height = 0.8
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_v8lhw"]
+animation = &"eat"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_as3kk"]
+animation = &"look left"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_3c27b"]
+animation = &"look right"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_ehcn7"]
+animation = &"rest"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_h1jc4"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_as3kk")
+blend_point_0/pos = -1.0
+blend_point_1/node = SubResource("AnimationNodeAnimation_3c27b")
+blend_point_1/pos = 1.0
+blend_point_2/node = SubResource("AnimationNodeAnimation_ehcn7")
+blend_point_2/pos = 0.0
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_1dueo"]
+animation = &"walk"
+advance_on_start = true
+
+[sub_resource type="AnimationNodeBlend2" id="AnimationNodeBlend2_as3kk"]
+filter_enabled = true
+filters = ["schaap skelet/Skeleton3D:kop", "schaap skelet/Skeleton3D:nek", "schaap skelet/Skeleton3D:oor links 1", "schaap skelet/Skeleton3D:oor links 2", "schaap skelet/Skeleton3D:oor rechts 1", "schaap skelet/Skeleton3D:oor rechts 2", "schaap skelet/Skeleton3D:rug 2"]
+
+[sub_resource type="AnimationNodeTimeScale" id="AnimationNodeTimeScale_3c27b"]
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_t2u00"]
+animation = &"look left"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_64jm5"]
+animation = &"look right"
+
+[sub_resource type="AnimationNodeAnimation" id="AnimationNodeAnimation_uvbyt"]
+animation = &"rest"
+
+[sub_resource type="AnimationNodeBlendSpace1D" id="AnimationNodeBlendSpace1D_ehcn7"]
+blend_point_0/node = SubResource("AnimationNodeAnimation_t2u00")
+blend_point_0/pos = -0.7
+blend_point_1/node = SubResource("AnimationNodeAnimation_64jm5")
+blend_point_1/pos = 0.7
+blend_point_2/node = SubResource("AnimationNodeAnimation_uvbyt")
+blend_point_2/pos = 0.0
+min_space = -0.75
+max_space = 0.75
+
+[sub_resource type="AnimationNodeBlendTree" id="AnimationNodeBlendTree_h1jc4"]
+graph_offset = Vector2(-136.60138, -2.3511734)
+nodes/output/position = Vector2(1280, 300)
+nodes/Animation/node = SubResource("AnimationNodeAnimation_1dueo")
+nodes/Animation/position = Vector2(560, 220)
+nodes/Blend2/node = SubResource("AnimationNodeBlend2_as3kk")
+nodes/Blend2/position = Vector2(1000, 280)
+"nodes/view dir/node" = SubResource("AnimationNodeBlendSpace1D_ehcn7")
+"nodes/view dir/position" = Vector2(780, 420)
+"nodes/move speed/node" = SubResource("AnimationNodeTimeScale_3c27b")
+"nodes/move speed/position" = Vector2(740, 220)
+node_connections = [&"output", 0, &"Blend2", &"Blend2", 0, &"move speed", &"Blend2", 1, &"view dir", &"move speed", 0, &"Animation"]
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_ygnnh"]
+xfade_time = 0.5
+advance_mode = 2
+advance_expression = "velocity.length() == 0"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_jbsuk"]
+xfade_time = 0.5
+advance_mode = 2
+advance_expression = "velocity.length() > 0"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_2pjk1"]
+xfade_time = 0.5
+advance_mode = 2
+advance_expression = "my_animation_state == animation_state.grazend"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_yt3ho"]
+xfade_time = 0.5
+advance_mode = 2
+advance_expression = "my_animation_state != animation_state.grazend"
+
+[sub_resource type="AnimationNodeStateMachineTransition" id="AnimationNodeStateMachineTransition_husc5"]
+advance_mode = 2
+
+[sub_resource type="AnimationNodeStateMachine" id="AnimationNodeStateMachine_yt3ho"]
+states/Start/position = Vector2(223, 162)
+states/eat/node = SubResource("AnimationNodeAnimation_v8lhw")
+states/eat/position = Vector2(609, 228)
+"states/view dir/node" = SubResource("AnimationNodeBlendSpace1D_h1jc4")
+"states/view dir/position" = Vector2(396, 162)
+states/walking/node = SubResource("AnimationNodeBlendTree_h1jc4")
+states/walking/position = Vector2(566, 56)
+transitions = ["walking", "view dir", SubResource("AnimationNodeStateMachineTransition_ygnnh"), "view dir", "walking", SubResource("AnimationNodeStateMachineTransition_jbsuk"), "view dir", "eat", SubResource("AnimationNodeStateMachineTransition_2pjk1"), "eat", "view dir", SubResource("AnimationNodeStateMachineTransition_yt3ho"), "Start", "view dir", SubResource("AnimationNodeStateMachineTransition_husc5")]
+graph_offset = Vector2(-56, 17)
 
 [node name="Schaap" type="CharacterBody3D" unique_id=258340122 node_paths=PackedStringArray("debug_label")]
 script = ExtResource("1_5i12d")
 debug_label = NodePath("Label3D")
 
-[node name="Body" type="MeshInstance3D" parent="." unique_id=1229517002]
-transform = Transform3D(1, 0, 0, 0, -4.371139e-08, 1, 0, -1, -4.371139e-08, 0, 0, 0)
-mesh = SubResource("CapsuleMesh_3k1mh")
-surface_material_override/0 = ExtResource("1_3k1mh")
+[node name="schaap2" parent="." unique_id=1055980013 instance=ExtResource("2_v8lhw")]
+transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, -0.41341856)
+
+[node name="Skeleton3D" parent="schaap2/schaap skelet" parent_id_path=PackedInt32Array(1055980013, 385124278) index="0" unique_id=1231102615]
+bones/0/position = Vector3(2.0628791e-16, 0.76320016, 0.12581281)
+bones/1/rotation = Quaternion(0.08891427, -0.002437573, 0.0249753, 0.9957231)
+bones/2/position = Vector3(0.11239947, 0.28270054, -0.29042855)
+bones/2/rotation = Quaternion(-0.7232574, 0.04595625, 0.020051166, 0.6887559)
+bones/3/rotation = Quaternion(-0.00093436777, 0.00795032, -0.045646288, 0.9989257)
+bones/4/rotation = Quaternion(0.18668032, 6.8647277e-10, -3.5906638e-08, 0.98242074)
+bones/5/position = Vector3(-0.090023994, 0.29307848, -0.28801373)
+bones/5/rotation = Quaternion(-0.7246605, -0.009327763, -0.054281987, 0.68690145)
+bones/6/rotation = Quaternion(-0.00093434006, -0.007950234, 0.045646198, 0.9989257)
+bones/7/rotation = Quaternion(0.18668024, -6.580927e-10, -4.7971273e-08, 0.98242074)
+bones/8/rotation = Quaternion(0.4089272, -0.0002127653, -0.038913164, 0.91173697)
+bones/9/rotation = Quaternion(-0.6161338, -0.013401973, 0.01310096, 0.7874185)
+bones/10/rotation = Quaternion(-0.46101585, 0.5950919, 0.53204024, 0.387638)
+bones/11/rotation = Quaternion(-0.0047585503, 0.0019356709, -0.09612568, 0.99535596)
+bones/12/position = Vector3(0.054042373, 0.38331032, 0.04063538)
+bones/12/rotation = Quaternion(0.65296704, 0.72949725, 0.20296569, -0.016513314)
+bones/13/rotation = Quaternion(0.04527455, 0.40485597, 0.065368846, 0.91091645)
+bones/14/position = Vector3(0.098194614, 0.03346374, -0.29153913)
+bones/14/rotation = Quaternion(0.9422046, 0.038302023, 0.022481598, -0.33208135)
+bones/15/rotation = Quaternion(0.51509076, 0.015220073, 0.041723106, 0.8559843)
+bones/16/rotation = Quaternion(0.1740458, 7.5499207e-10, -4.257495e-08, 0.9847376)
+bones/17/position = Vector3(-0.10449559, 0.033256464, -0.28920782)
+bones/17/rotation = Quaternion(0.9422046, -0.038301904, -0.022482142, -0.33208138)
+bones/18/rotation = Quaternion(0.51509076, -0.015219924, -0.04172335, 0.8559843)
+bones/19/rotation = Quaternion(0.17404592, -3.668428e-09, -4.08474e-08, 0.98473763)
+bones/20/rotation = Quaternion(0.07847434, 2.3768337e-07, 3.3284691e-15, 0.9969161)
 
 [node name="Label3D" type="Label3D" parent="." unique_id=1756365708]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2538025, 0)
@@ -27,17 +143,17 @@ text = "Schaap id:
 "
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=1393164505]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.007080078, -0.003112793, 0.035614014)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.006164551, 0.5277346, -0.20547941)
 shape = SubResource("BoxShape3D_v8lhw")
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=2092126818]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3034668, 0.9075012)
-mesh = SubResource("SphereMesh_v8lhw")
+[node name="schaap animation tree" type="AnimationTree" parent="." unique_id=529737015]
+root_node = NodePath("../schaap2")
+tree_root = SubResource("AnimationNodeStateMachine_yt3ho")
+advance_expression_base_node = NodePath("..")
+anim_player = NodePath("../schaap2/AnimationPlayer")
+"parameters/view dir/blend_position" = 0.0
+parameters/walking/Blend2/blend_amount = 0.75
+"parameters/walking/view dir/blend_position" = 0.132
+"parameters/walking/move speed/scale" = 1.0
 
-[node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=1379439457]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.21569824, -0.21530533, -0.68237305)
-mesh = SubResource("SphereMesh_v8lhw")
-
-[node name="MeshInstance3D3" type="MeshInstance3D" parent="." unique_id=49331433]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.16519165, -0.25610733, -0.68237305)
-mesh = SubResource("SphereMesh_v8lhw")
+[editable path="schaap2"]

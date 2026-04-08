@@ -30,7 +30,7 @@ ambient_light_color = Color(1, 1, 1, 1)
 [node name="veld" type="Node3D" unique_id=758643933]
 
 [node name="schapen" type="Node3D" parent="." unique_id=808041578]
-transform = Transform3D(0.004660069, 0, -0.99998915, 0, 1, 0, 0.99998915, 0, 0.004660069, -3.2685547, 0.45422363, 1.6965332)
+transform = Transform3D(0.004660069, 0, -0.99998915, 0, 1, 0, 0.99998915, 0, 0.004660069, -3.269, 0, 1.697)
 
 [node name="Schaap" parent="schapen" unique_id=267504549 node_paths=PackedStringArray("cam") instance=ExtResource("3_bski0")]
 cam = NodePath("../../Camera3D")
@@ -64,7 +64,7 @@ transform = Transform3D(0.89255446, 0, 0.45093977, 0, 1, 0, -0.45093977, 0, 0.89
 cam = NodePath("../../Camera3D")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1317603994 node_paths=PackedStringArray("debug_sphere")]
-transform = Transform3D(-4.371139e-08, -1, 0, -4.371139e-08, 1.9106855e-15, 1, -1, 4.371139e-08, -4.371139e-08, 0.6739297, 20.84056, 2.844655)
+transform = Transform3D(-4.371139e-08, -1, 0, -4.371139e-08, 1.9106855e-15, 1, -1, 4.371139e-08, -4.371139e-08, -3.5584922, 15.189713, 0.98564625)
 script = ExtResource("2_rbvbe")
 debug_sphere = NodePath("../Debug_sphere")
 

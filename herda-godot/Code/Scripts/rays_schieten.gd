@@ -5,7 +5,7 @@ extends Camera3D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-		look_at(Vector3.ZERO)
+	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
@@ -22,8 +22,3 @@ func _process(_delta: float) -> void:
 	if hit:
 		target_coordinate = hit.position
 		debug_sphere.global_position = hit.position
-	
-	# sphere spawnen
-
-#func guide_sheep() -> void:
-	

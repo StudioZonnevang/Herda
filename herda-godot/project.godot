@@ -52,6 +52,11 @@ nudge={
 ]
 }
 
+[navigation]
+
+3d/default_cell_size=0.2
+3d/default_cell_height=0.1
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

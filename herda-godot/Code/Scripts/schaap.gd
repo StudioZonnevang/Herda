@@ -8,16 +8,21 @@ extends CharacterBody3D
 var debug_text = []
 var debug_sphere : MeshInstance3D
 
-@onready var body : MeshInstance3D = find_child("Body")
+@onready var body : MeshInstance3D = $"schaap model/schaap skelet/Skeleton3D/schaap"
+@onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
 
 ### Schaap movement ###
 var animation_tree: AnimationTree
 var speed : float
 var looking_direction: float
+var interesse: float = 0.0
+var interesse_angle: float = 0.0
 @export var max_speed : float = 30
 @export var turn_speed : float = 1
 @export var head_turn_speed: float = 3
 @export var schaap_acceleration: float = 1
+@export var schaap_deceleration: float = 3
+var read_velocity: Vector3 # this is only for reading velocity from inspector. shouldnt be used in logic
 
 @export var minimum_behoefte: float = 0.01
 
@@ -28,7 +33,7 @@ var maag1 = 0 #part of temporary eating logic
 @export var irritatie_afstanden = {
 	"herder_rust": 6,
 	"herder_lopend": 5,
-	"schaap_rust": 3,
+	"schaap_rust": 2,
 	"schaap_lopend": 1
 }
 
@@ -59,8 +64,12 @@ var mijn_herder: CharacterBody3D
 var waargenomen_schapen = []
 var irritatiebronnen = []
 
+var rng = RandomNumberGenerator.new()
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	honger_increment = honger_increment * rng.randf_range(0.75, 1.0)
+	
 	if(herder_scene != null):
 		mijn_herder = herder_scene.find_child("herder")
 	animation_tree = find_child("schaap animation tree")
@@ -69,12 +78,15 @@ func _ready() -> void:
 		debug_sphere = get_parent().get_parent().find_child("Debug_sphere")
 
 func _physics_process(delta: float) -> void:
-	animation_tree.set("parameters/walking/move speed/scale", velocity.length() * 2.0) #SCHAAP MOVES 0.5M in 32 FRAMES! IE  ONE FULL WALK CYCLE
-	if(velocity.length() < 0.05):
-		velocity = Vector3(0,0,0)
-		return
-	my_animation_state = animation_state.verplaatsing
+	animation_tree.set("parameters/walking/move speed/scale", Vector2(velocity.x, velocity.z).length() * 2.0) #SCHAAP MOVES 0.5M in 32 FRAMES! IE  ONE FULL WALK CYCLE
+	
+	if(velocity.length() > 0.05):
+		my_animation_state = animation_state.verplaatsing
+	
+	read_velocity = velocity
 	move_and_slide()
+	if(!is_on_floor() and velocity.y <= 0): # this is an ugly and unreliable fix to a bug where sheep get stuck on small ledges
+		velocity += Vector3.DOWN * delta * 15 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -87,17 +99,18 @@ func _process(delta: float) -> void:
 	
 	if debug_mode:
 		update_debug_panel()
-	if debug_sphere:
+	if debug_sphere and !Input.is_action_pressed("nudge"):
 		look_towards(delta, debug_sphere.global_position)
+	if debug_sphere and Input.is_action_pressed("nudge"):
+		verplaatsen_doel(debug_sphere.global_position, 0.1, delta)
+		return
 	
 	match [minimum_behoefte, behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max() : 
 		behoefte_voeding : voeding_logica(delta)
 		behoefte_persoonlijke_ruimte : persoonlijke_ruimte_logica(delta)
 		behoefte_gezelligheid : gezelligheid_logica(delta)
 		minimum_behoefte: 
-			my_animation_state = animation_state.idle
-			verplaatsen_gebied(delta)
-	
+			idle_logica(delta)
 
 # welke schapen neemt het schaap waar. hoeft mss niet elk frame.
 func update_waargenomen_schapen() -> void:
@@ -113,7 +126,7 @@ func update_waargenomen_schapen() -> void:
 		if !hit or hit.collider == schaapje:
 			waargenomen_schapen.append(schaapje)
 
-# bepaald de dringendheid van de behoefte
+# bepaalt de dringendheid van de behoefte
 func update_behoefte_voeding(delta) -> void:
 	if (behoefte_voeding < 1):
 		behoefte_voeding += delta * honger_increment
@@ -176,7 +189,7 @@ func update_behoefte_gezelligheid() -> void:
 func voeding_logica(delta) -> void:
 	# GRAZEN PLACEHOLDER:
 	if velocity.length() > 0:
-		verplaatsen_gebied(delta)
+		lerp_velocity(Vector3.ZERO, delta)
 		return
 	my_animation_state = animation_state.grazend
 	maag1 += delta
@@ -189,6 +202,24 @@ func persoonlijke_ruimte_logica(delta) -> void:
 	# keep for now because i think we will need logic here later
 	verplaatsen_gebied(delta)
 
+func gezelligheid_logica(delta) -> void:
+	# is just a redirection now. see persoonlijke_ruimte_logica
+	verplaatsen_gebied(delta)
+
+func idle_logica(delta) -> void:
+	# stand still
+	my_animation_state = animation_state.idle
+	lerp_velocity(Vector3.ZERO, delta)
+	
+	#look around a bit
+	if interesse <= 0:
+		interesse = rng.randf_range(2.0, 3.0)
+		interesse_angle = rng.randf_range(-1.0,1.0)
+	interesse -= 0.01
+	look_towards(delta, null, interesse_angle)
+
+### Verplaatsing ###
+
 func persoonlijke_ruimte_verplaatsing() -> Vector2:
 	if behoefte_persoonlijke_ruimte < minimum_behoefte: return Vector2(0,0)
 	
@@ -198,32 +229,31 @@ func persoonlijke_ruimte_verplaatsing() -> Vector2:
 		run_direction += Vector2(dir.x, dir.z)
 	return run_direction
 
-func gezelligheid_logica(delta) -> void:
-	# is just a redirection now. see persoonlijke_ruimte_logica
-	verplaatsen_gebied(delta)
-
 func gezelligheid_verplaatsing() -> Vector2:
 	return Vector2(0,0)
-
-### Verplaatsing ###
 
 func verplaatsen_gebied(delta) -> void:
 	# General movement function: optimize position for different goals
 	var run_goal = Vector2(0,0)
 	
-	run_goal += persoonlijke_ruimte_verplaatsing()
-	run_goal += gezelligheid_verplaatsing()
+	run_goal += persoonlijke_ruimte_verplaatsing().normalized() * behoefte_persoonlijke_ruimte
+	run_goal += gezelligheid_verplaatsing().normalized() * behoefte_gezelligheid
 	
 	run_goal = run_goal.normalized()
 	
 	run_goal = Vector3(run_goal.x, 0, run_goal.y)
 	if(run_goal.length_squared() > 0):
-		schaap_orienteren(global_position + run_goal, delta)
-	velocity += (run_goal * max_speed * [behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max() - velocity) * delta * schaap_acceleration
+		verplaatsen_doel(global_position + run_goal, [behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max(), delta)
 
-func verplaatsen_doel(goal, delta) -> void:
-	# THis needs actual pathfinding
-	pass
+func verplaatsen_doel(goal, behoefte, delta) -> void:
+	navigation_agent.set_target_position(goal)
+	var nav_goal = navigation_agent.get_next_path_position()
+	var run_goal = global_position.direction_to(nav_goal) * max_speed * behoefte
+	schaap_orienteren(nav_goal, delta)
+	lerp_velocity(run_goal, delta)
+
+func lerp_velocity(goal, delta) -> void:
+	velocity += (goal - velocity) * delta * (schaap_acceleration if goal.length() > velocity.length() else schaap_deceleration)
 
 ### Utilities ###
 

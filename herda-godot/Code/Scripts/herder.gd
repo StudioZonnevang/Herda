@@ -19,15 +19,17 @@ var looking = 0.0
 
 @onready var player: AnimationPlayer = find_child("AnimationPlayer")
 
-var walk_vector = Vector3(0,0,0)
+var walk_vector = Vector3.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	state_machine = animation_tree.get("parameters/animation states/playback")
 
-func _physics_process(_delta: float) -> void:
-	set_velocity(Vector3(walk_vector.x, walk_vector.y, walk_vector.z)) # can add gravity etc here
+func _physics_process(delta: float) -> void:
+	velocity = Vector3(walk_vector.x, velocity.y, walk_vector.z)
+	if(!is_on_floor()):
+		velocity += Vector3.DOWN * delta * 10
 	move_and_slide()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -42,7 +44,7 @@ func _process(delta: float) -> void:
 		if abs(atc) > PI: atc = atc + (2*PI if atc < 0 else -2*PI)
 		rotation.y += atc * TURN_SPEED * delta
 	else:
-		walk_vector = Vector3(0.0,0.0,0.0)
+		walk_vector = Vector3.ZERO
 	
 	#look around
 	var atc_anim = cam_base.rotation.y - rotation.y # angle to camera

@@ -5,11 +5,15 @@ extends Camera3D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
-
+		look_at(Vector3.ZERO)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta: float) -> void:
+	var motion = Input.get_axis("walk backwards", "walk forward")
+	if motion != 0:
+		position = position.rotated(Vector3.BACK, motion*0.02)
+		look_at(Vector3.ZERO)
+	
 	var space = get_world_3d().direct_space_state
 	var target_coordinates = project_ray_normal(get_viewport().get_mouse_position())
 	var hit = space.intersect_ray(

@@ -64,7 +64,7 @@ transform = Transform3D(0.89255446, 0, 0.45093977, 0, 1, 0, -0.45093977, 0, 0.89
 cam = NodePath("../../Camera3D")
 
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1317603994 node_paths=PackedStringArray("debug_sphere")]
-transform = Transform3D(-4.371139e-08, -1, 0, -4.371139e-08, 1.9106855e-15, 1, -1, 4.371139e-08, -4.371139e-08, -3.5584922, 15.189713, 0.98564625)
+transform = Transform3D(-4.371139e-08, -1, 0, -4.371139e-08, 1.9106855e-15, 1, -1, 4.371139e-08, -4.371139e-08, 0, 15.19, 0)
 script = ExtResource("2_rbvbe")
 debug_sphere = NodePath("../Debug_sphere")
 

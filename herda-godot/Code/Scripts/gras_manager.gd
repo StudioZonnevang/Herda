@@ -18,10 +18,10 @@ var graas_rect = Rect2i(Vector2i.ZERO, tex_size)
 
 # deze jongen spawnt gras voor de schaapjes om te chappen
 # we willen dit wss met een soort texture doen die we als input voor de grond mesh shader gebruiken en die kan dan 3D gras spawnen op basis daarvan. wordt crazy
-# maar voor nu kunnen we het ook gewoon als groenheids texture gebruiken ofzo.
+# maar voor nu kunnen we het ook gewoon als groenheids waarde gebruiken ofzo.
 
-# Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	# take noise map as base image
 	gras_shader = gras_mesh.mesh.surface_get_material(0)
 	image = gras_shader.get_shader_parameter("gras_map").noise.get_image(tex_size.x, tex_size.y)
 	image.convert(Image.FORMAT_LA8)
@@ -39,18 +39,32 @@ func _ready() -> void:
 			graas_image.set_pixel(x, y, Color(0,0,0, val_x * val_y * 0.5))
 	
 	texture = ImageTexture.create_from_image(image)
-	
 	gras_shader.set_shader_parameter("gras_map", texture)
+	
+	call_deferred("purge_grass")
 
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	current_delta = delta
 	time += delta
 	if(time > 1.0):
 		time -= 1.0
-		image.blend_rect(white_image, img_rect, Vector2i.ZERO)
-		RenderingServer.texture_2d_update(texture.get_rid(), image, 0)
+		# dit is om gras automatisch terug te laten groeien
+		#image.blend_rect(white_image, img_rect, Vector2i.ZERO)
+		#RenderingServer.texture_2d_update(texture.get_rid(), image, 0)
+
+func purge_grass() -> void:
+	#eradicate all unreachable areas:
+	var space = get_world_3d().direct_space_state
+	for x in range(0, tex_size.x):
+		for y in range(0,tex_size.y):
+			var coord = tex_to_world_coord(Vector2i(x,y))
+			if coord.x > 25 or coord.z > 25 or coord.x < -25 or coord.z < -25:
+				image.set_pixel(x, y, Color(0,0,0,1)) #outside navigatie gebiedsw
+			var hit = space.intersect_ray(
+				PhysicsRayQueryParameters3D.create(coord + Vector3.UP * 100, coord + Vector3.DOWN * 100))
+			if hit and hit.collider.name != "grond" and !hit.collider.name.begins_with("Schaap"):
+				image.set_pixel(x, y, Color(0,0,0,1))
+	RenderingServer.texture_2d_update(texture.get_rid(), image, 0)
 
 func eat_gras(world_coord: Vector3) -> void:
 	#my issue is this goes too fast but im having a hard time slowing it down. this works for now.
@@ -66,4 +80,9 @@ func sample_gras(world_coord: Vector3) -> float:
 func world_to_tex_coord(world_coord: Vector3) -> Vector2i:
 	var mesh_top_left = Vector2(gras_mesh.global_position.x, gras_mesh.global_position.z) - gras_mesh.mesh.size*0.5
 	return Vector2(tex_size) * (Vector2(world_coord.x, world_coord.z) - mesh_top_left) / gras_mesh.mesh.size
+
+func tex_to_world_coord(tex_coord: Vector2i) -> Vector3:
+	var mesh_top_left = Vector2(gras_mesh.global_position.x, gras_mesh.global_position.z) - gras_mesh.mesh.size*0.5
+	var world_coord_v2 = mesh_top_left + (Vector2(tex_coord) / Vector2(tex_size)) * gras_mesh.mesh.size
+	return Vector3(world_coord_v2.x, 0, world_coord_v2.y)
 	

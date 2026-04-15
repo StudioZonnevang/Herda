@@ -25,6 +25,7 @@ var interesse_angle: float = 0.0
 @export var schaap_acceleration: float = 1
 @export var schaap_deceleration: float = 3
 var read_velocity: Vector3 # this is only for reading velocity from inspector. shouldnt be used in logic
+var verplaatsing_doel: Vector3 = Vector3.ZERO
 
 @export var minimum_behoefte: float = 0.01
 
@@ -191,17 +192,42 @@ func update_behoefte_gezelligheid() -> void:
 
 # bepaalt de manier waarop de behoefte vervuld wordt
 func voeding_logica(delta) -> void:
-	# GRAZEN NAVIGATIE PLACEHOLDER
+	# GRAZEN NAVIGATIE
 	# hier moet hij naar een plekje met genoeg gras navigeren en als die op is doorgaan
-	# dit is hoe je het gras checkt:
-	#var gras_level = gras_manager.sample_gras(mondje.global_position)
-	if velocity.length() > 0:
+	
+	# nodige bugfixes:
+	# - ze gaan wel soms vechten om een plekje en dan komen ze er niet meer uit
+		# ze moeten soms kunnen evalueren of ze wel de juiste richting hebben gekozen
+		# ze moeten niet allemaal dezelfde kant opgaan
+	# - ze doen de eet animatie niet meer
+	# - ze blijven soms hangen als ze denken dat het eten op is
+	if gras_manager.sample_gras(mondje.global_position) > 0.4:
+		verplaatsing_doel = Vector3.ZERO
+	elif verplaatsing_doel == Vector3.ZERO or gras_manager.sample_gras(verplaatsing_doel) < 0.5:
+		# check da area. gaat nu in een spiraal naar buiten vanuit het schaap
+		var goal = {coord = Vector2(global_basis.z.x, global_basis.z.z), value = 0.0}
+		while goal.value < 0.5 and goal.coord.length() < 50:
+			goal.coord = goal.coord.rotated(0.1) * 1.01
+			goal.value = gras_manager.sample_gras(global_position + Vector3(goal.coord.x, 0.0, goal.coord.y))
+		if goal.value > 0.5:
+			verplaatsing_doel = global_position + Vector3(goal.coord.x, 0.0, goal.coord.y)
+	
+	if verplaatsing_doel != Vector3.ZERO:
+		verplaatsen_doel(verplaatsing_doel, behoefte_voeding, delta)
+		if verplaatsing_doel.distance_squared_to(global_position) > 1.5:
+			return
+	elif gras_manager.sample_gras(mondje.global_position) < 0.4:
+		# schaap gaat in exploration modus. hebben we nog niet
+		print("eten is op :(")
+		return
+	
+	if velocity.length() > 0.04:
 		lerp_velocity(Vector3.ZERO, delta)
 		if velocity.length() < 0.02:
 			velocity = Vector3.ZERO
 		else:
 			return
-
+	
 	# GRAZEN
 	my_animation_state = animation_state.grazend
 	maag1 += delta

@@ -24,4 +24,4 @@ func _process(_delta: float) -> void:
 		target_coordinate = hit.position
 		debug_sphere.global_position = hit.position
 	if hit and Input.is_action_pressed("nudge"):
-		gras_manager.eat_grass(hit.position)
+		gras_manager.eat_gras(hit.position)

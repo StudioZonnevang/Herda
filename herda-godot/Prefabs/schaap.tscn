@@ -102,6 +102,10 @@ states/walking/position = Vector2(566, 56)
 transitions = ["walking", "view dir", SubResource("AnimationNodeStateMachineTransition_ygnnh"), "view dir", "walking", SubResource("AnimationNodeStateMachineTransition_jbsuk"), "view dir", "eat", SubResource("AnimationNodeStateMachineTransition_2pjk1"), "eat", "view dir", SubResource("AnimationNodeStateMachineTransition_yt3ho"), "Start", "view dir", SubResource("AnimationNodeStateMachineTransition_husc5")]
 graph_offset = Vector2(-56, 17)
 
+[sub_resource type="SphereMesh" id="SphereMesh_v8lhw"]
+radius = 0.1
+height = 0.2
+
 [node name="Schaap" type="CharacterBody3D" unique_id=258340122 node_paths=PackedStringArray("debug_label")]
 floor_snap_length = 0.2
 script = ExtResource("1_5i12d")
@@ -112,35 +116,35 @@ transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0
 
 [node name="Skeleton3D" parent="schaap model/schaap skelet" parent_id_path=PackedInt32Array(1055980013, 385124278) index="0" unique_id=1231102615]
 bones/0/position = Vector3(2.0628791e-16, 0.76320016, 0.12581281)
-bones/1/rotation = Quaternion(0.08891427, -0.002437573, 0.0249753, 0.9957231)
-bones/2/position = Vector3(0.11239947, 0.28270054, -0.29042855)
-bones/2/rotation = Quaternion(-0.7232574, 0.04595625, 0.020051166, 0.6887559)
-bones/3/rotation = Quaternion(-0.00093436777, 0.00795032, -0.045646288, 0.9989257)
-bones/4/rotation = Quaternion(0.18668032, 6.8647277e-10, -3.5906638e-08, 0.98242074)
-bones/5/position = Vector3(-0.090023994, 0.29307848, -0.28801373)
-bones/5/rotation = Quaternion(-0.7246605, -0.009327763, -0.054281987, 0.68690145)
-bones/6/rotation = Quaternion(-0.00093434006, -0.007950234, 0.045646198, 0.9989257)
-bones/7/rotation = Quaternion(0.18668024, -6.580927e-10, -4.7971273e-08, 0.98242074)
-bones/8/rotation = Quaternion(0.4089272, -0.0002127653, -0.038913164, 0.91173697)
-bones/9/rotation = Quaternion(-0.6161338, -0.013401973, 0.01310096, 0.7874185)
-bones/10/rotation = Quaternion(-0.46101585, 0.5950919, 0.53204024, 0.387638)
-bones/11/rotation = Quaternion(-0.0047585503, 0.0019356709, -0.09612568, 0.99535596)
-bones/12/position = Vector3(0.054042373, 0.38331032, 0.04063538)
-bones/12/rotation = Quaternion(0.65296704, 0.72949725, 0.20296569, -0.016513314)
-bones/13/rotation = Quaternion(0.04527455, 0.40485597, 0.065368846, 0.91091645)
-bones/14/position = Vector3(0.098194614, 0.03346374, -0.29153913)
-bones/14/rotation = Quaternion(0.9422046, 0.038302023, 0.022481598, -0.33208135)
-bones/15/rotation = Quaternion(0.51509076, 0.015220073, 0.041723106, 0.8559843)
-bones/16/rotation = Quaternion(0.1740458, 7.5499207e-10, -4.257495e-08, 0.9847376)
-bones/17/position = Vector3(-0.10449559, 0.033256464, -0.28920782)
-bones/17/rotation = Quaternion(0.9422046, -0.038301904, -0.022482142, -0.33208138)
-bones/18/rotation = Quaternion(0.51509076, -0.015219924, -0.04172335, 0.8559843)
-bones/19/rotation = Quaternion(0.17404592, -3.668428e-09, -4.08474e-08, 0.98473763)
-bones/20/rotation = Quaternion(0.07847434, 2.3768337e-07, 3.3284691e-15, 0.9969161)
+bones/0/rotation = Quaternion(-0.75525737, -7.813316e-08, 9.003371e-08, 0.65542847)
+bones/1/rotation = Quaternion(-0.15767494, 0.003753842, 0.024811668, 0.9871722)
+bones/2/position = Vector3(0.10906404, 0.2161916, -0.27694866)
+bones/2/rotation = Quaternion(-0.7931738, 0.051546805, 0.018927228, 0.60651475)
+bones/3/rotation = Quaternion(0.7122756, -0.027008774, -0.03764744, 0.70036894)
+bones/4/rotation = Quaternion(-0.255313, 3.7941095e-09, 6.3067226e-08, 0.96685845)
+bones/5/position = Vector3(-0.09296283, 0.23440759, -0.26766405)
+bones/5/rotation = Quaternion(-0.64510655, -0.0070821964, -0.058976244, 0.76178026)
+bones/6/rotation = Quaternion(0.6735244, 0.024942148, 0.039046895, 0.7377114)
+bones/7/rotation = Quaternion(-0.3770597, -7.679675e-09, 8.369782e-08, 0.92618895)
+bones/8/rotation = Quaternion(-0.18992446, 0.003876686, -0.043296237, 0.980836)
+bones/9/rotation = Quaternion(-0.35611954, -0.008935411, 0.016474392, 0.93425244)
+bones/10/rotation = Quaternion(-0.46101588, 0.5950919, 0.53204024, 0.38763797)
+bones/11/rotation = Quaternion(-0.0047585494, 0.0019356933, -0.09612568, 0.99535596)
+bones/12/position = Vector3(0.054042414, 0.3833102, 0.040635284)
+bones/12/rotation = Quaternion(0.6529671, 0.7294973, 0.2029657, -0.016513303)
+bones/13/rotation = Quaternion(0.045274552, 0.40485597, 0.06536885, 0.91091645)
+bones/14/position = Vector3(0.098194614, 0.033463713, -0.29153922)
+bones/14/rotation = Quaternion(0.92897075, 0.03742433, 0.023914143, -0.36747903)
+bones/15/rotation = Quaternion(0.54774815, 0.016819257, 0.041104507, 0.8354637)
+bones/16/rotation = Quaternion(0.1740458, 7.5500584e-10, -4.2574946e-08, 0.9847376)
+bones/17/position = Vector3(-0.10449559, 0.03325647, -0.28920782)
+bones/17/rotation = Quaternion(0.9422046, -0.0383019, -0.022482144, -0.33208138)
+bones/18/rotation = Quaternion(0.51509076, -0.015219923, -0.041723352, 0.8559843)
+bones/19/rotation = Quaternion(0.17404589, -3.6684307e-09, -4.0847397e-08, 0.98473763)
+bones/20/rotation = Quaternion(0.078474335, 2.3768337e-07, 5.1103213e-15, 0.9969161)
 
 [node name="Label3D" type="Label3D" parent="." unique_id=1756365708]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2538025, 0)
-visible = false
 text = "Schaap id:
 "
 
@@ -162,5 +166,10 @@ parameters/walking/Blend2/blend_amount = 0.75
 path_desired_distance = 0.5
 target_desired_distance = 0.5
 path_height_offset = 0.5
+
+[node name="mondje" type="MeshInstance3D" parent="." unique_id=1518516672]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.028259575, 0.27317548)
+visible = false
+mesh = SubResource("SphereMesh_v8lhw")
 
 [editable path="schaap model"]

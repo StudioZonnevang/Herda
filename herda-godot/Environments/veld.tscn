@@ -1,20 +1,9 @@
 [gd_scene format=3 uid="uid://bb1f7k55loof7"]
 
-[ext_resource type="Texture2D" uid="uid://ddvdpya5ne1dv" path="res://icon.svg" id="1_4x8bh"]
 [ext_resource type="PackedScene" uid="uid://bu0xi632uidrt" path="res://Prefabs/herder.tscn" id="1_rvhd0"]
 [ext_resource type="PackedScene" uid="uid://cgb4u6fgjtacl" path="res://Prefabs/schaap.tscn" id="2_kiesj"]
-
-[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fvqsh"]
-albedo_color = Color(0.07871274, 0.17750236, 2.5268645e-07, 1)
-albedo_texture = ExtResource("1_4x8bh")
-uv1_scale = Vector3(100, 100, 100)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_kes36"]
-material = SubResource("StandardMaterial3D_fvqsh")
-size = Vector2(200, 200)
-
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_45o6w"]
-points = PackedVector3Array(-100, 0, -100, -100, 0, 100, 100, 0, 100, 100, 0, -100)
+[ext_resource type="Shader" uid="uid://pblyf0icafbm" path="res://Materials/Shaders/gras.gdshader" id="3_sk88p"]
+[ext_resource type="Script" uid="uid://c2wklgdy1mnnf" path="res://Code/Scripts/gras_manager.gd" id="4_3qi4y"]
 
 [sub_resource type="Environment" id="Environment_kes36"]
 background_mode = 1
@@ -33,15 +22,37 @@ agent_max_climb = 0.15
 [sub_resource type="PlaneMesh" id="PlaneMesh_sk88p"]
 size = Vector2(50, 50)
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ot3xf"]
+noise_type = 2
+frequency = 0.0166
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1snyg"]
+noise = SubResource("FastNoiseLite_ot3xf")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vxnm7"]
+frequency = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_i1kit"]
+width = 2048
+height = 2048
+noise = SubResource("FastNoiseLite_vxnm7")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s70ui"]
+render_priority = 0
+shader = ExtResource("3_sk88p")
+shader_parameter/gras_map = SubResource("NoiseTexture2D_1snyg")
+shader_parameter/random_noise = SubResource("NoiseTexture2D_i1kit")
+shader_parameter/random_noise_strength = 0.1
+shader_parameter/gras_strength = 0.435
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_1t4lw"]
+material = SubResource("ShaderMaterial_s70ui")
+size = Vector2(200, 200)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_kb8wm"]
+points = PackedVector3Array(-100, 0, -100, -100, 0, 100, 100, 0, 100, 100, 0, -100)
+
 [node name="veld" type="Node3D" unique_id=758643933]
-
-[node name="grond" type="StaticBody3D" parent="." unique_id=271516881]
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="grond" unique_id=1574474382]
-mesh = SubResource("PlaneMesh_kes36")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="grond" unique_id=1315690791]
-shape = SubResource("ConvexPolygonShape3D_45o6w")
 
 [node name="achtergrond" type="WorldEnvironment" parent="." unique_id=625299007]
 environment = SubResource("Environment_kes36")
@@ -54,37 +65,45 @@ light_energy = 1.92
 
 [node name="schapen" type="Node3D" parent="." unique_id=1378710940]
 
-[node name="Schaap" parent="schapen" unique_id=267504549 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
+[node name="Schaap" parent="schapen" unique_id=267504549 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.004660069, 0, -0.99998915, 0, 1, 0, 0.99998915, 0, 0.004660069, -3.2685547, 0, 1.6965332)
 herder_scene = NodePath("../../herder_scene")
+gras_manager = NodePath("../../grond/gras")
 
-[node name="Schaap4" parent="schapen" unique_id=670988552 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
+[node name="Schaap4" parent="schapen" unique_id=670988552 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.7903155, 0, -0.61270016, 0, 1, 0, 0.61270016, 0, 0.7903155, -3.083496, 0, 4.8344727)
 herder_scene = NodePath("../../herder_scene")
+gras_manager = NodePath("../../grond/gras")
 
-[node name="Schaap5" parent="schapen" unique_id=32996501 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
+[node name="Schaap5" parent="schapen" unique_id=32996501 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.007277906, 0, 0.99997354, 0, 1, 0, -0.99997354, 0, 0.007277906, -0.678, 0, -3.634)
 herder_scene = NodePath("../../herder_scene")
+gras_manager = NodePath("../../grond/gras")
 
-[node name="Schaap6" parent="schapen" unique_id=655873081 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
+[node name="Schaap6" parent="schapen" unique_id=655873081 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.8752451, 0, 0.48367968, 0, 1, 0, -0.48367968, 0, 0.8752451, 5.131836, 0, -2.326294)
 herder_scene = NodePath("../../herder_scene")
+gras_manager = NodePath("../../grond/gras")
 
-[node name="Schaap7" parent="schapen" unique_id=459055785 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
+[node name="Schaap7" parent="schapen" unique_id=459055785 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(-0.7741387, 0, 0.63301605, 0, 1, 0, -0.63301605, 0, -0.7741387, 2.4763184, 0, -2.2089233)
 herder_scene = NodePath("../../herder_scene")
+gras_manager = NodePath("../../grond/gras")
 
-[node name="Schaap8" parent="schapen" unique_id=776454124 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
+[node name="Schaap8" parent="schapen" unique_id=776454124 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(-0.8359223, 0, -0.5488478, 0, 1, 0, 0.5488478, 0, -0.8359223, 1.1546631, 0, -7.020996)
 herder_scene = NodePath("../../herder_scene")
+gras_manager = NodePath("../../grond/gras")
 
-[node name="Schaap2" parent="schapen" unique_id=1086239353 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
+[node name="Schaap2" parent="schapen" unique_id=1086239353 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.8267273, 0, 0.56260294, 0, 1, 0, -0.56260294, 0, 0.8267273, 2.6427002, 0, 1.6218872)
 herder_scene = NodePath("../../herder_scene")
+gras_manager = NodePath("../../grond/gras")
 
-[node name="Schaap3" parent="schapen" unique_id=1183785107 node_paths=PackedStringArray("herder_scene") instance=ExtResource("2_kiesj")]
+[node name="Schaap3" parent="schapen" unique_id=1183785107 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.45509425, 0, -0.8904433, 0, 1, 0, 0.8904433, 0, 0.45509425, 0.49694824, 0, 4.5443726)
 herder_scene = NodePath("../../herder_scene")
+gras_manager = NodePath("../../grond/gras")
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=439958201]
 navigation_mesh = SubResource("NavigationMesh_4x8bh")
@@ -138,3 +157,15 @@ size = Vector3(6.477295, 4.3895264, 1.293457)
 [node name="CSGBox3D4" type="CSGBox3D" parent="NavigationRegion3D/CSGCombiner3D" unique_id=1707388054]
 transform = Transform3D(0.8064446, 0, 0.59130967, 0, 1, 0, -0.59130967, 0, 0.8064446, -7.799288, 0.5402527, -2.6651325)
 size = Vector3(4.3100586, 2.0805054, 5.7958984)
+
+[node name="grond" type="StaticBody3D" parent="." unique_id=555984510]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="grond" unique_id=162678815]
+mesh = SubResource("PlaneMesh_1t4lw")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="grond" unique_id=1313936443]
+shape = SubResource("ConvexPolygonShape3D_kb8wm")
+
+[node name="gras" type="Node3D" parent="grond" unique_id=1717161712 node_paths=PackedStringArray("gras_mesh")]
+script = ExtResource("4_3qi4y")
+gras_mesh = NodePath("../MeshInstance3D")

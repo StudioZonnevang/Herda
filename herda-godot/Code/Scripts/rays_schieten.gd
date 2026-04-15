@@ -2,6 +2,7 @@ extends Camera3D
 
 @export var target_coordinate : Vector3
 @export var debug_sphere : MeshInstance3D
+@export var gras_manager:Node3D
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -22,3 +23,5 @@ func _process(_delta: float) -> void:
 	if hit:
 		target_coordinate = hit.position
 		debug_sphere.global_position = hit.position
+	if hit and Input.is_action_pressed("nudge"):
+		gras_manager.eat_grass(hit.position)

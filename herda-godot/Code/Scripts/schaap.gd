@@ -10,6 +10,8 @@ var debug_sphere : MeshInstance3D
 
 @onready var body : MeshInstance3D = $"schaap model/schaap skelet/Skeleton3D/schaap"
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
+@export var gras_manager: Node3D
+@onready var mondje :MeshInstance3D = $mondje
 
 ### Schaap movement ###
 var animation_tree: AnimationTree
@@ -189,15 +191,22 @@ func update_behoefte_gezelligheid() -> void:
 
 # bepaalt de manier waarop de behoefte vervuld wordt
 func voeding_logica(delta) -> void:
-	# GRAZEN PLACEHOLDER:
+	# GRAZEN NAVIGATIE PLACEHOLDER
+	# hier moet hij naar een plekje met genoeg gras navigeren en als die op is doorgaan
+	# dit is hoe je het gras checkt:
+	#var gras_level = gras_manager.sample_gras(mondje.global_position)
 	if velocity.length() > 0:
 		lerp_velocity(Vector3.ZERO, delta)
 		if velocity.length() < 0.02:
 			velocity = Vector3.ZERO
 		else:
 			return
+
+	# GRAZEN
 	my_animation_state = animation_state.grazend
 	maag1 += delta
+	gras_manager.eat_gras(mondje.global_position)
+	
 	if(maag1 > 3.0):
 		maag1 = 0
 		behoefte_voeding = 0

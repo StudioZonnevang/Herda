@@ -31,8 +31,8 @@ var maag1 = 0 #part of temporary eating logic
 
 @export var behoefte_persoonlijke_ruimte_falloff: float = 0.5
 @export var irritatie_afstanden = {
-	"herder_rust": 6,
-	"herder_lopend": 5,
+	"herder_rust": 4,
+	"herder_lopend": 2.5,
 	"schaap_rust": 2,
 	"schaap_lopend": 1
 }
@@ -117,12 +117,12 @@ func update_waargenomen_schapen() -> void:
 	waargenomen_schapen = []
 	var space = get_world_3d().direct_space_state
 	for schaapje in alle_schapen:
-		#near 360 degree vision so no view cone.
+		# near 360 degree vision so no view cone.
 		if schaapje == self: continue
 		
-		var target_coordinates = schaapje.global_position
+		var target_coordinates = schaapje.global_position + Vector3.UP * 0.8
 		var hit = space.intersect_ray(
-			PhysicsRayQueryParameters3D.create(global_position, target_coordinates))
+			PhysicsRayQueryParameters3D.create(global_position + Vector3.UP * 0.8, target_coordinates))
 		if !hit or hit.collider == schaapje:
 			waargenomen_schapen.append(schaapje)
 
@@ -144,7 +144,9 @@ func update_behoefte_persoonlijke_ruimte() -> void:
 		if irritatie == 0: continue
 		irritatiebronnen.append({"bron": irritatiebron, "irritatie": irritatie})
 		irritatie_totaal += irritatie
-	behoefte_persoonlijke_ruimte = 1 - 1 / sqrt(behoefte_persoonlijke_ruimte_falloff * irritatie_totaal + 1)
+	irritatie_totaal = (irritatiebronnen.map(func(bron): return bron.irritatie).max() if irritatiebronnen.size() > 0 else 0) + 0.1 * irritatie_totaal
+	var goal_behoefte_persoonlijke_ruimte = 1 - 1 / sqrt(behoefte_persoonlijke_ruimte_falloff * irritatie_totaal + 1)
+	behoefte_persoonlijke_ruimte += (goal_behoefte_persoonlijke_ruimte - behoefte_persoonlijke_ruimte) * (0.005 if goal_behoefte_persoonlijke_ruimte > behoefte_persoonlijke_ruimte and behoefte_persoonlijke_ruimte < 0.02 else 0.2)
 
 func update_behoefte_gezelligheid() -> void:
 	# benodigde drijfveren voor gezelligheid
@@ -190,7 +192,10 @@ func voeding_logica(delta) -> void:
 	# GRAZEN PLACEHOLDER:
 	if velocity.length() > 0:
 		lerp_velocity(Vector3.ZERO, delta)
-		return
+		if velocity.length() < 0.02:
+			velocity = Vector3.ZERO
+		else:
+			return
 	my_animation_state = animation_state.grazend
 	maag1 += delta
 	if(maag1 > 3.0):

@@ -3,8 +3,10 @@
 [ext_resource type="Script" uid="uid://djfu051k63haf" path="res://Code/Scripts/rays_schieten.gd" id="2_rbvbe"]
 [ext_resource type="PackedScene" uid="uid://cgb4u6fgjtacl" path="res://Prefabs/schaap.tscn" id="3_bski0"]
 [ext_resource type="Material" uid="uid://ltecfd50t77k" path="res://Materials/test-material-sander.tres" id="3_mrk32"]
-[ext_resource type="Shader" uid="uid://pblyf0icafbm" path="res://Materials/Shaders/gras.gdshader" id="4_bski0"]
+[ext_resource type="Shader" uid="uid://pblyf0icafbm" path="res://Materials/Shaders/gras_surface.gdshader" id="4_bski0"]
 [ext_resource type="Script" uid="uid://c2wklgdy1mnnf" path="res://Code/Scripts/gras_manager.gd" id="5_bski0"]
+[ext_resource type="Script" uid="uid://d04efkm2pno5c" path="res://Code/Scripts/gras_mesh.gd" id="6_mrk32"]
+[ext_resource type="ArrayMesh" uid="uid://b6jqhpywkcs2n" path="res://Models/gras.res" id="7_4keu6"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_4keu6"]
 material = ExtResource("3_mrk32")
@@ -22,8 +24,8 @@ noise = SubResource("FastNoiseLite_bski0")
 frequency = 1.0
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mrk32"]
-width = 2048
-height = 2048
+width = 256
+height = 256
 noise = SubResource("FastNoiseLite_mrk32")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_4keu6"]
@@ -113,15 +115,23 @@ mesh = SubResource("SphereMesh_4keu6")
 
 [node name="grond" type="StaticBody3D" parent="." unique_id=271516881]
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="grond" unique_id=1574474382]
+[node name="grond mesh" type="MeshInstance3D" parent="grond" unique_id=1574474382]
 mesh = SubResource("PlaneMesh_kes36")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="grond" unique_id=1315690791]
 shape = SubResource("ConvexPolygonShape3D_45o6w")
 
-[node name="gras" type="Node3D" parent="grond" unique_id=1770706554 node_paths=PackedStringArray("gras_mesh")]
+[node name="gras" type="Node3D" parent="grond" unique_id=1770706554 node_paths=PackedStringArray("grond_mesh", "gras_mesh")]
 script = ExtResource("5_bski0")
-gras_mesh = NodePath("../MeshInstance3D")
+grond_mesh = NodePath("../grond mesh")
+gras_mesh = NodePath("../gras_mesh")
+
+[node name="gras_mesh" type="Node3D" parent="grond" unique_id=393435524 node_paths=PackedStringArray("grond")]
+script = ExtResource("6_mrk32")
+grond = NodePath("../../NavigationRegion3D/MeshInstance3D")
+gras_mesh = ExtResource("7_4keu6")
+chunk_size = 5.0
+gras_density = 40.0
 
 [node name="achtergrond" type="WorldEnvironment" parent="." unique_id=625299007]
 environment = SubResource("Environment_kes36")

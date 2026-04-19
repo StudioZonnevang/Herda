@@ -9,10 +9,10 @@ func _ready() -> void:
 	pass
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
 	var motion = Input.get_axis("walk backwards", "walk forward")
 	if motion != 0:
-		position = position.rotated(Vector3.BACK, motion*0.02)
+		position = position.rotated(Vector3.BACK, motion * 2.0 * delta)
 		look_at(Vector3.ZERO)
 	
 	var space = get_world_3d().direct_space_state

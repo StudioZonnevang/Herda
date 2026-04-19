@@ -5,16 +5,19 @@ extends CharacterBody3D
 @export var debug_mode : bool = true 
 @export var cam: Camera3D
 @export var debug_label : Label3D
+@export var gras_manager: Node3D
+
 var debug_text = []
 var debug_sphere : MeshInstance3D
 
 @onready var body : MeshInstance3D = $"schaap model/schaap skelet/Skeleton3D/schaap"
 @onready var navigation_agent: NavigationAgent3D = $NavigationAgent3D
-@export var gras_manager: Node3D
-@onready var mondje :MeshInstance3D = $mondje
+@onready var mondje: MeshInstance3D = $mondje
+@onready var animation_tree: AnimationTree = $"schaap animation tree"
+
+var state_machine: AnimationNodeStateMachinePlayback
 
 ### Schaap movement ###
-var animation_tree: AnimationTree
 var speed : float
 var looking_direction: float
 var interesse: float = 0.0
@@ -71,11 +74,12 @@ var rng = RandomNumberGenerator.new()
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	state_machine = animation_tree.get("parameters/playback")
+	
 	honger_increment = honger_increment * rng.randf_range(0.75, 1.0)
 	
 	if(herder_scene != null):
 		mijn_herder = herder_scene.find_child("herder")
-	animation_tree = find_child("schaap animation tree")
 	
 	if debug_mode and cam != null:
 		debug_sphere = get_parent().get_parent().find_child("Debug_sphere")
@@ -195,16 +199,16 @@ func voeding_logica(delta) -> void:
 	# GRAZEN NAVIGATIE
 	# hier moet hij naar een plekje met genoeg gras navigeren en als die op is doorgaan
 	
-	# nodige bugfixes:
+	# gaat nu best redelijk maar nog een paar nodige bugfixes:
 	# - ze gaan wel soms vechten om een plekje en dan komen ze er niet meer uit
 		# ze moeten soms kunnen evalueren of ze wel de juiste richting hebben gekozen
 		# ze moeten niet allemaal dezelfde kant opgaan
-	# - ze doen de eet animatie niet meer
 	# - ze blijven soms hangen als ze denken dat het eten op is
 	if gras_manager.sample_gras(mondje.global_position) > 0.4:
 		verplaatsing_doel = Vector3.ZERO
 	elif verplaatsing_doel == Vector3.ZERO or gras_manager.sample_gras(verplaatsing_doel) < 0.5:
 		# check da area. gaat nu in een spiraal naar buiten vanuit het schaap
+		# dit is prima maar het houdt geen rekening met het gezichtveld van het schaap. en dat is misschien oke.
 		var goal = {coord = Vector2(global_basis.z.x, global_basis.z.z), value = 0.0}
 		while goal.value < 0.5 and goal.coord.length() < 50:
 			goal.coord = goal.coord.rotated(0.1) * 1.01
@@ -230,8 +234,12 @@ func voeding_logica(delta) -> void:
 	
 	# GRAZEN
 	my_animation_state = animation_state.grazend
-	maag1 += delta
-	gras_manager.eat_gras(mondje.global_position)
+	
+	# im gonna do some cursed animation based logic.
+	
+	if state_machine.get_current_node() == "eat" and state_machine.get_current_play_position() + delta > state_machine.get_current_length():
+		maag1 += 1.0
+		gras_manager.eat_gras(mondje.global_position)
 	
 	if(maag1 > 3.0):
 		maag1 = 0
@@ -255,7 +263,7 @@ func idle_logica(delta) -> void:
 	if interesse <= 0:
 		interesse = rng.randf_range(2.0, 3.0)
 		interesse_angle = rng.randf_range(-1.0,1.0)
-	interesse -= 0.01
+	interesse -= 0.5 * delta
 	look_towards(delta, null, interesse_angle)
 
 ### Verplaatsing ###

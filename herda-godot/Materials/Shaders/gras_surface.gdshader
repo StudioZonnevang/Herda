@@ -1,5 +1,6 @@
 shader_type spatial;
-//render_mode cull_disabled;
+
+uniform sampler2D wind_noise;
 uniform sampler2D gras_map;
 uniform sampler2D random_noise;
 
@@ -17,8 +18,6 @@ void fragment() {
 	ALBEDO = vec3(0.2, green, 0.02) + random_noise_value;
 }
 
-//void light() {
-	//// COMMENT THIS LATER
-	//// Called for every pixel for every light affecting the material.
-	//// Uncomment to replace the default light processing function with this one.
-//}
+void light() {
+	DIFFUSE_LIGHT = vec3(0.8);
+}

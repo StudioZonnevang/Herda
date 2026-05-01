@@ -7,41 +7,12 @@
 [ext_resource type="Script" uid="uid://c2wklgdy1mnnf" path="res://Code/Scripts/gras_manager.gd" id="5_bski0"]
 [ext_resource type="Script" uid="uid://d04efkm2pno5c" path="res://Code/Scripts/gras_mesh.gd" id="6_mrk32"]
 [ext_resource type="ArrayMesh" uid="uid://b6jqhpywkcs2n" path="res://Models/gras.res" id="7_4keu6"]
+[ext_resource type="ArrayMesh" uid="uid://d3cx6yocplyo2" path="res://Models/gras_quads.res" id="8_5ave8"]
 
 [sub_resource type="SphereMesh" id="SphereMesh_4keu6"]
 material = ExtResource("3_mrk32")
 radius = 0.05
 height = 0.1
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_bski0"]
-noise_type = 2
-frequency = 0.0166
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_4keu6"]
-noise = SubResource("FastNoiseLite_bski0")
-
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_mrk32"]
-frequency = 1.0
-
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_mrk32"]
-width = 256
-height = 256
-noise = SubResource("FastNoiseLite_mrk32")
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_4keu6"]
-render_priority = 0
-shader = ExtResource("4_bski0")
-shader_parameter/gras_map = SubResource("NoiseTexture2D_4keu6")
-shader_parameter/random_noise = SubResource("NoiseTexture2D_mrk32")
-shader_parameter/random_noise_strength = 0.1
-shader_parameter/gras_strength = 0.435
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_kes36"]
-material = SubResource("ShaderMaterial_4keu6")
-size = Vector2(200, 200)
-
-[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_45o6w"]
-points = PackedVector3Array(-100, 0, -100, -100, 0, 100, 100, 0, 100, 100, 0, -100)
 
 [sub_resource type="Environment" id="Environment_kes36"]
 background_mode = 1
@@ -59,6 +30,45 @@ agent_max_climb = 0.15
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_bski0"]
 size = Vector2(50, 50)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_ot3xf"]
+noise_type = 2
+frequency = 0.004
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_c7s1s"]
+noise = SubResource("FastNoiseLite_ot3xf")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_vxnm7"]
+frequency = 1.0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_ccshb"]
+width = 256
+height = 256
+noise = SubResource("FastNoiseLite_vxnm7")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1snyg"]
+frequency = 0.02
+fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_pwpcb"]
+noise = SubResource("FastNoiseLite_1snyg")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_s70ui"]
+render_priority = 0
+shader = ExtResource("4_bski0")
+shader_parameter/wind_noise = SubResource("NoiseTexture2D_pwpcb")
+shader_parameter/gras_map = SubResource("NoiseTexture2D_c7s1s")
+shader_parameter/random_noise = SubResource("NoiseTexture2D_ccshb")
+shader_parameter/random_noise_strength = 0.1
+shader_parameter/gras_strength = 0.435
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_5nc8e"]
+material = SubResource("ShaderMaterial_s70ui")
+size = Vector2(50, 50)
+
+[sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_1snug"]
+points = PackedVector3Array(-100, 0, -100, -100, 0, 100, 100, 0, 100, 100, 0, -100)
 
 [node name="veld" type="Node3D" unique_id=758643933]
 
@@ -112,26 +122,6 @@ gras_manager = NodePath("../grond/gras")
 
 [node name="Debug_sphere" type="MeshInstance3D" parent="." unique_id=1129343615]
 mesh = SubResource("SphereMesh_4keu6")
-
-[node name="grond" type="StaticBody3D" parent="." unique_id=271516881]
-
-[node name="grond mesh" type="MeshInstance3D" parent="grond" unique_id=1574474382]
-mesh = SubResource("PlaneMesh_kes36")
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="grond" unique_id=1315690791]
-shape = SubResource("ConvexPolygonShape3D_45o6w")
-
-[node name="gras" type="Node3D" parent="grond" unique_id=1770706554 node_paths=PackedStringArray("grond_mesh", "gras_mesh")]
-script = ExtResource("5_bski0")
-grond_mesh = NodePath("../grond mesh")
-gras_mesh = NodePath("../gras_mesh")
-
-[node name="gras_mesh" type="Node3D" parent="grond" unique_id=393435524 node_paths=PackedStringArray("grond")]
-script = ExtResource("6_mrk32")
-grond = NodePath("../../NavigationRegion3D/MeshInstance3D")
-gras_mesh = ExtResource("7_4keu6")
-chunk_size = 5.0
-gras_density = 40.0
 
 [node name="achtergrond" type="WorldEnvironment" parent="." unique_id=625299007]
 environment = SubResource("Environment_kes36")
@@ -192,3 +182,25 @@ size = Vector3(6.477295, 4.3895264, 1.293457)
 [node name="CSGBox3D4" type="CSGBox3D" parent="NavigationRegion3D/CSGCombiner3D" unique_id=1388238618]
 transform = Transform3D(0.8064446, 0, 0.59130967, 0, 1, 0, -0.59130967, 0, 0.8064446, -7.799288, 0.5402527, -2.6651325)
 size = Vector3(4.3100586, 2.0805054, 5.7958984)
+
+[node name="grond" type="StaticBody3D" parent="." unique_id=256674583]
+
+[node name="grond mesh" type="MeshInstance3D" parent="grond" unique_id=1690460417]
+mesh = SubResource("PlaneMesh_5nc8e")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="grond" unique_id=1663542506]
+shape = SubResource("ConvexPolygonShape3D_1snug")
+
+[node name="gras" type="Node3D" parent="grond" unique_id=1021830362 node_paths=PackedStringArray("grond_mesh", "gras_mesh")]
+script = ExtResource("5_bski0")
+grond_mesh = NodePath("../grond mesh")
+gras_mesh = NodePath("../gras_mesh")
+
+[node name="gras_mesh" type="Node3D" parent="grond" unique_id=719333787 node_paths=PackedStringArray("grond")]
+script = ExtResource("6_mrk32")
+gras_mode = "quads"
+grond = NodePath("../../NavigationRegion3D/MeshInstance3D")
+gras_individual_mesh = ExtResource("7_4keu6")
+gras_quad_mesh = ExtResource("8_5ave8")
+chunk_size = 50.0
+gras_quad_density = 8.0

@@ -6,6 +6,7 @@
 [ext_resource type="Script" uid="uid://c2wklgdy1mnnf" path="res://Code/Scripts/gras_manager.gd" id="4_3qi4y"]
 [ext_resource type="Script" uid="uid://d04efkm2pno5c" path="res://Code/Scripts/gras_mesh.gd" id="5_ot3xf"]
 [ext_resource type="ArrayMesh" uid="uid://b6jqhpywkcs2n" path="res://Models/gras.res" id="6_1snyg"]
+[ext_resource type="ArrayMesh" uid="uid://d3cx6yocplyo2" path="res://Models/gras_quads.res" id="7_1snyg"]
 
 [sub_resource type="Environment" id="Environment_kes36"]
 background_mode = 1
@@ -24,12 +25,12 @@ agent_max_climb = 0.15
 [sub_resource type="PlaneMesh" id="PlaneMesh_sk88p"]
 size = Vector2(50, 50)
 
-[sub_resource type="FastNoiseLite" id="FastNoiseLite_ot3xf"]
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_1snyg"]
 noise_type = 2
-frequency = 0.0166
+frequency = 0.004
 
 [sub_resource type="NoiseTexture2D" id="NoiseTexture2D_1snyg"]
-noise = SubResource("FastNoiseLite_ot3xf")
+noise = SubResource("FastNoiseLite_1snyg")
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_vxnm7"]
 frequency = 1.0
@@ -39,9 +40,18 @@ width = 256
 height = 256
 noise = SubResource("FastNoiseLite_vxnm7")
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_i1kit"]
+frequency = 0.02
+fractal_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_vxnm7"]
+noise = SubResource("FastNoiseLite_i1kit")
+seamless = true
+
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_s70ui"]
 render_priority = 0
 shader = ExtResource("3_sk88p")
+shader_parameter/wind_noise = SubResource("NoiseTexture2D_vxnm7")
 shader_parameter/gras_map = SubResource("NoiseTexture2D_1snyg")
 shader_parameter/random_noise = SubResource("NoiseTexture2D_i1kit")
 shader_parameter/random_noise_strength = 0.1
@@ -183,6 +193,9 @@ gras_mesh = NodePath("../gras_mesh")
 
 [node name="gras_mesh" type="Node3D" parent="grond" unique_id=1597797102 node_paths=PackedStringArray("grond")]
 script = ExtResource("5_ot3xf")
+gras_mode = "quads"
 grond = NodePath("../../NavigationRegion3D/MeshInstance3D")
-gras_mesh = ExtResource("6_1snyg")
-gras_density = 40.0
+gras_individual_mesh = ExtResource("6_1snyg")
+gras_quad_mesh = ExtResource("7_1snyg")
+chunk_size = 50.0
+gras_quad_density = 8.0

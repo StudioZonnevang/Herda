@@ -3,25 +3,45 @@ extends Node3D
 
 # so this is only responsible for rendering the 3d grass. maybe this could be part of gras_manager,
 # but i get a good feeling about splitting it
- 
+
+@export_enum("quads", "individual meshes") var gras_mode: String
 @export var grond: MeshInstance3D
-@export var gras_mesh: ArrayMesh
+@export var gras_individual_mesh: ArrayMesh
+@export var gras_quad_mesh: ArrayMesh
 @export var chunk_size: float = 10.0 # chunk size in m. chunks are square
-@export var gras_density: float = 10.0 # gras meshes spawned per meter. (10 per m -> 100 per m2)
+@export var gras_individual_density: float = 40.0 # gras meshes spawned per meter. (10 per m -> 100 per m2)
+@export var gras_quad_density: float = 6.0 # gras meshes spawned per meter. (10 per m -> 100 per m2)
 
 var chunk_count: Vector2i
 var chunks: Array = Array()
+var gras_mesh: ArrayMesh
+var gras_density: float
+var gras_mesh_scale: float
 
 var rng = RandomNumberGenerator.new()
 
-func initialize_gras(texture: ImageTexture, grond_size: float) -> void:
+func initialize_gras(texture: ImageTexture, grond_size: float, grond_shader: ShaderMaterial) -> void:
 	if !visible:
 		return
+	
+	var wind_noise = grond_shader.get_shader_parameter("wind_noise")
+	
+	match gras_mode:
+		"individual meshes":
+			gras_mesh = gras_individual_mesh
+			gras_density = gras_individual_density
+			gras_mesh_scale = 1.0
+		"quads":
+			gras_mesh = gras_quad_mesh
+			gras_density = gras_quad_density
+			gras_mesh_scale = 2.0
+	
 	# chop the terrain up into chunks and spawn some multimeshes to allow frustum culling and dynamic detail
 	var gras_mat: ShaderMaterial = gras_mesh.surface_get_material(0)
 	gras_mat.set_shader_parameter("gras_map", texture)
 	gras_mat.set_shader_parameter("grond_size", grond_size)
 	gras_mat.set_shader_parameter("inv_grond_size", 1.0 / grond_size)
+	gras_mat.set_shader_parameter("wind_noise", wind_noise)
 	
 	var grond_bb = grond.mesh.get_aabb()
 	chunk_count = Vector2i(ceil(grond_bb.size.x/chunk_size), ceil(grond_bb.size.z/chunk_size)) # chop x and z
@@ -43,12 +63,12 @@ func initialize_gras(texture: ImageTexture, grond_size: float) -> void:
 			
 			# compute shader should handle this bullshit
 			for i in range(mm.instance_count):
-				var basis = Basis(Vector3.UP, rng.randf_range(0.0,2*PI))
-				var tx = Transform3D(basis, Vector3(
+				var mesh_basis = Basis(Vector3.UP, rng.randf_range(0.0,2*PI))
+				var tx = Transform3D(mesh_basis, Vector3(
 					mm.custom_aabb.position.x + fmod(i, chunk_size * gras_density) * dist_per_gras + rng.randf_range(-0.5*dist_per_gras, 0.5*dist_per_gras), 
 					0.0, 
 					mm.custom_aabb.position.z + floor(i/(chunk_size * gras_density)) * dist_per_gras + rng.randf_range(-0.5*dist_per_gras, 0.5*dist_per_gras)
-				))
+				)).scaled_local(Vector3.ONE * gras_mesh_scale)
 				mm.set_instance_transform(i, tx)
 
 			var mm_instance = MultiMeshInstance3D.new()

@@ -69,6 +69,8 @@ var ziektes = []
 var mijn_herder: CharacterBody3D
 var waargenomen_schapen = []
 var irritatiebronnen = []
+# set "loner" value
+# set "minimale kudde grote
 
 var rng = RandomNumberGenerator.new()
 
@@ -102,7 +104,7 @@ func _process(delta: float) -> void:
 	# behoeftes updaten
 	update_behoefte_voeding(delta)
 	update_behoefte_persoonlijke_ruimte()
-	update_behoefte_gezelligheid()
+	update_behoefte_gezelligheid(delta)
 	
 	if debug_mode:
 		update_debug_panel()
@@ -155,40 +157,60 @@ func update_behoefte_persoonlijke_ruimte() -> void:
 	var goal_behoefte_persoonlijke_ruimte = 1 - 1 / sqrt(behoefte_persoonlijke_ruimte_falloff * irritatie_totaal + 1)
 	behoefte_persoonlijke_ruimte += (goal_behoefte_persoonlijke_ruimte - behoefte_persoonlijke_ruimte) * (0.005 if goal_behoefte_persoonlijke_ruimte > behoefte_persoonlijke_ruimte and behoefte_persoonlijke_ruimte < 0.02 else 0.2)
 
-func update_behoefte_gezelligheid() -> void:
+var afstand_tot_kudde_centrum : float = 0
+var aantal_waargenomen_schapen : int = 0
+var afstand_tot_dichtstbijzijnde_schapen : float
+var eenzame_tijd_verstreken : float = 0
+var minimale_kudde_hoeveelheid : int = 5
+var ervaren_afstand_dichtstbijzijnde_schapen : float
+var eenzaamheid_increment : float
+var debug_val
+#afhankelijk van een soort "loner" / "volgzaamheid" variable?
+
+func update_behoefte_gezelligheid(delta) -> void:
 	# benodigde drijfveren voor gezelligheid
-	var aantal_waargenomen_schapen : int = waargenomen_schapen.size()
-	var afstand_tot_kudde_centrum : float = 0
-	var gemiddelde_afstand_dichtstbijzijnde_schapen : float = 0
+	#var aantal_waargenomen_schapen : int = waargenomen_schapen.size()
+	#var afstand_tot_kudde_centrum : float = 0
+	#var gemiddelde_afstand_dichtstbijzijnde_schapen : float = 0
 	#var eenzame_tijd_verstreken : float
+	aantal_waargenomen_schapen = waargenomen_schapen.size()
 	
 	# ondersteunende variabelen
 	var dichtstbijzijnde_schapen = []
 	var waargenomen_kudde_centrum : Vector3
+	
+	
 	for i in waargenomen_schapen:
 		var afstand = position.distance_to(i.position)
 		dichtstbijzijnde_schapen.append([i, afstand])
 		afstand_tot_kudde_centrum += afstand
-		waargenomen_kudde_centrum.x += i.position.x
-		waargenomen_kudde_centrum.y += i.position.y
-		waargenomen_kudde_centrum.z += i.position.z
-	waargenomen_kudde_centrum.x = waargenomen_kudde_centrum.x / waargenomen_schapen.size()
-	waargenomen_kudde_centrum.y = waargenomen_kudde_centrum.y / waargenomen_schapen.size()
-	waargenomen_kudde_centrum.z = waargenomen_kudde_centrum.z / waargenomen_schapen.size()
-	
-	afstand_tot_kudde_centrum = afstand_tot_kudde_centrum / waargenomen_schapen.size()#position.distance_to(waargenomen_kudde_centrum)
+		waargenomen_kudde_centrum += i.position
+	afstand_tot_kudde_centrum = position.distance_to(waargenomen_kudde_centrum/aantal_waargenomen_schapen)
 	
 	dichtstbijzijnde_schapen.sort_custom(func(a, b): return a[1] > b[1])
-	var minimale_kudde_hoeveelheid: int = 5 #afhankelijk van een soort "loner" / "volgzaamheid" variable?
 	var aantal_schapen_dichtbij: int = min(minimale_kudde_hoeveelheid, dichtstbijzijnde_schapen.size())
 	var max_gezichtveld_schaap: float = 100.0
+	var gemiddelde_dichtstbijzijnde_schapen_positie : Vector3
 	for i in aantal_schapen_dichtbij:
-		gemiddelde_afstand_dichtstbijzijnde_schapen += position.distance_to(dichtstbijzijnde_schapen[i][0].position)
-	gemiddelde_afstand_dichtstbijzijnde_schapen = gemiddelde_afstand_dichtstbijzijnde_schapen / aantal_schapen_dichtbij
-	var ervaren_afstand_dichtstbijzijnde_schapen = (
-			gemiddelde_afstand_dichtstbijzijnde_schapen + 
+		gemiddelde_dichtstbijzijnde_schapen_positie += dichtstbijzijnde_schapen[i][0].position
+	afstand_tot_dichtstbijzijnde_schapen = position.distance_to(gemiddelde_dichtstbijzijnde_schapen_positie/aantal_schapen_dichtbij)
+	ervaren_afstand_dichtstbijzijnde_schapen = (
+			afstand_tot_dichtstbijzijnde_schapen + 
 			max_gezichtveld_schaap * 
 			(minimale_kudde_hoeveelheid - aantal_schapen_dichtbij))
+	
+	var hoeveelheid_gewicht = 10
+	var afstand_tot_kudde_gewicht = 5
+	var afstand_tot_minimale_kudde_gewicht = 20
+	var target  = 150
+	var xval = min(max_gezichtveld_schaap, afstand_tot_kudde_centrum) / max_gezichtveld_schaap
+	var eenval = -(1 / (40 * (xval - 1)))
+	debug_val = eenval
+	#eenzaamheid_increment = (
+		#hoeveelheid_gewicht * (minimale_kudde_hoeveelheid / aantal_waargenomen_schapen) + #returns a value between 0 and 1
+		#afstand_tot_kudde_gewicht * (min(max_gezichtveld_schaap, afstand_tot_kudde_centrum) / max_gezichtveld_schaap)*(min(max_gezichtveld_schaap, afstand_tot_kudde_centrum) / max_gezichtveld_schaap) +
+		#afstand_tot_minimale_kudde_gewicht * (ervaren_afstand_dichtstbijzijnde_schapen / minimale_kudde_hoeveelheid)*(afstand_tot_dichtstbijzijnde_schapen / minimale_kudde_hoeveelheid)
+		#)
 	
 	add_to_debug_panel("Waargenomen schapen: ", aantal_waargenomen_schapen)
 	add_to_debug_panel("Ervaren afstand tot dichtstbijzijnde schapen: ", ervaren_afstand_dichtstbijzijnde_schapen)
@@ -278,6 +300,7 @@ func persoonlijke_ruimte_verplaatsing() -> Vector2:
 	return run_direction
 
 func gezelligheid_verplaatsing() -> Vector2:
+	# bereken de vector
 	return Vector2(0,0)
 
 func verplaatsen_gebied(delta) -> void:

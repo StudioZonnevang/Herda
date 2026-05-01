@@ -114,7 +114,7 @@ debug_label = NodePath("Label3D")
 [node name="schaap model" parent="." unique_id=1055980013 instance=ExtResource("2_v8lhw")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, -0.41341856)
 
-[node name="Skeleton3D" parent="schaap model/schaap skelet" parent_id_path=PackedInt32Array(1055980013, 385124278) index="0" unique_id=1231102615]
+[node name="Skeleton3D" parent="schaap model/schaap skelet" parent_id_path=PackedInt32Array(1055980013, 1220341595) index="0" unique_id=2001703358]
 bones/0/position = Vector3(2.0628791e-16, 0.76320016, 0.12581281)
 bones/1/rotation = Quaternion(0.08891427, -0.002437573, 0.0249753, 0.9957231)
 bones/2/position = Vector3(0.11239947, 0.28270054, -0.29042855)

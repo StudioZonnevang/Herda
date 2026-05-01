@@ -23,7 +23,7 @@ var walk_vector = Vector3.ZERO
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	#Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	state_machine = animation_tree.get("parameters/animation states/playback")
 
 func _physics_process(delta: float) -> void:

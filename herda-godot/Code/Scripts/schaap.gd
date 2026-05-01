@@ -202,6 +202,7 @@ func update_behoefte_gezelligheid(delta) -> void:
 	var hoeveelheid_gewicht = 10
 	var afstand_tot_kudde_gewicht = 5
 	var afstand_tot_minimale_kudde_gewicht = 20
+	var target  = 150
 	var xval = min(max_gezichtveld_schaap, afstand_tot_kudde_centrum) / max_gezichtveld_schaap
 	var eenval = -(1 / (40 * (xval - 1)))
 	debug_val = eenval

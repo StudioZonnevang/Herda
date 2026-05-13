@@ -183,22 +183,24 @@ func update_behoefte_gezelligheid(delta) -> void:
 	var dichtstbijzijnde_schapen = []
 	var waargenomen_kudde_centrum = Vector3.ZERO
 	
-	for i in waargenomen_schapen:
-		var afstand = position.distance_to(i.position)
-		dichtstbijzijnde_schapen.append([i, afstand])
+	for schaapje in waargenomen_schapen:
+		var afstand = position.distance_to(schaapje.position)
+		dichtstbijzijnde_schapen.append({
+			"object": schaapje, 
+			"afstand": afstand})
 		afstand_tot_kudde_centrum += afstand
-		waargenomen_kudde_centrum += i.position
+		waargenomen_kudde_centrum += schaapje.position
 	afstand_tot_kudde_centrum = position.distance_to(waargenomen_kudde_centrum/aantal_waargenomen_schapen)
 	
-	dichtstbijzijnde_schapen.sort_custom(func(a, b): return a[1] > b[1])
+	dichtstbijzijnde_schapen.sort_custom(func(a, b): return a["afstand"] < b["afstand"])
 	var aantal_schapen_dichtbij: int = min(minimale_kudde_hoeveelheid, dichtstbijzijnde_schapen.size())
 	var max_gezichtveld_schaap: float = 100.0
 	var gemiddelde_dichtstbijzijnde_schapen_positie = Vector3.ZERO
 	if aantal_schapen_dichtbij > 0:
 		for i in range(0, aantal_schapen_dichtbij):
-			gemiddelde_dichtstbijzijnde_schapen_positie += dichtstbijzijnde_schapen[0][0].position
-		afstand_tot_dichtstbijzijnde_schapen = position.distance_to(gemiddelde_dichtstbijzijnde_schapen_positie/aantal_schapen_dichtbij)
+			gemiddelde_dichtstbijzijnde_schapen_positie += dichtstbijzijnde_schapen[i]["object"].global_position
 		laatste_locatie_schapen = gemiddelde_dichtstbijzijnde_schapen_positie/aantal_schapen_dichtbij
+		afstand_tot_dichtstbijzijnde_schapen = position.distance_to(laatste_locatie_schapen)
 		ervaren_afstand_dichtstbijzijnde_schapen = (
 			afstand_tot_dichtstbijzijnde_schapen + 
 			max_gezichtveld_schaap * 
@@ -216,20 +218,29 @@ func update_behoefte_gezelligheid(delta) -> void:
 	var afstand_tot_minimale_kudde_increment = afstand_tot_minimale_kudde_gewicht * (2 * (ervaren_afstand_dichtstbijzijnde_schapen / max_minimale_kudde_afstand) - 1.0)
 	var behoefte_voor_gezelligheid_increment = hoeveelheid_increment + afstand_tot_kudde_increment + afstand_tot_minimale_kudde_increment
 	
-	var duratie = 300
-	behoefte_gezelligheid += delta * behoefte_voor_gezelligheid_increment / duratie
+	var toeneem_duratie = 600
+	var afloop_duratie = 10
+	if (behoefte_voor_gezelligheid_increment > 0):
+		behoefte_gezelligheid += delta * behoefte_voor_gezelligheid_increment / toeneem_duratie
+	else: 
+		behoefte_gezelligheid += delta * behoefte_voor_gezelligheid_increment / afloop_duratie
 	behoefte_gezelligheid = min(max(0.0, behoefte_gezelligheid), 1.0)
 	
-	debug_kubus.global_position = laatste_locatie_schapen
+	# schaap_kleuren(behoefte_gezelligheid)
+	debug_kubus.global_position = Vector3(laatste_locatie_schapen.x, debug_kubus.global_position.y, laatste_locatie_schapen.z)
 	
-	add_to_debug_panel("laatste_locatie_schapen: ", laatste_locatie_schapen)
+	#add_to_debug_panel("laatste_locatie_schapen: ", laatste_locatie_schapen)
 	#add_to_debug_panel("afstand_tot_dichtstbijzijnde_schapen: ", afstand_tot_dichtstbijzijnde_schapen)
-	add_to_debug_panel("ervaren_afstand_dichtstbijzijnde_schapen: ", ervaren_afstand_dichtstbijzijnde_schapen)
-	add_to_debug_panel("hoeveelheid_increment: ", hoeveelheid_increment)
-	add_to_debug_panel("afstand_tot_kudde_increment: ", afstand_tot_kudde_increment)
-	add_to_debug_panel("afstand_tot_minimale_kudde_increment: ", afstand_tot_minimale_kudde_increment)
-	add_to_debug_panel("behoefte_voor_gezelligheid_increment: ", behoefte_voor_gezelligheid_increment)
+	#add_to_debug_panel("ervaren_afstand_dichtstbijzijnde_schapen: ", ervaren_afstand_dichtstbijzijnde_schapen)
+	#add_to_debug_panel("hoeveelheid_increment: ", hoeveelheid_increment)
+	#add_to_debug_panel("afstand_tot_kudde_increment: ", afstand_tot_kudde_increment)
+	#add_to_debug_panel("afstand_tot_minimale_kudde_increment: ", afstand_tot_minimale_kudde_increment)
+	#add_to_debug_panel("behoefte_voor_gezelligheid_increment: ", behoefte_voor_gezelligheid_increment)
 	add_to_debug_panel("behoefte_gezelligheid: ", behoefte_gezelligheid)
+	
+# rood schaap gezelligheid
+# gezelligheid plummet harder
+# wereld kaart beinvloed micro kaart
 
 # bepaalt de manier waarop de behoefte vervuld wordt
 func voeding_logica(delta) -> void:
@@ -315,7 +326,9 @@ func persoonlijke_ruimte_verplaatsing() -> Vector2:
 	return run_direction
 
 func gezelligheid_verplaatsing() -> Vector2:
-	navigation_agent.set_target_position(laatste_locatie_schapen)
+	#var nav_locatie = laatste_locatie_schapen * behoefte_gezelligheid + global_position * (1-behoefte_gezelligheid)
+	var nav_locatie = laatste_locatie_schapen
+	navigation_agent.set_target_position(nav_locatie)
 	var nav_goal = navigation_agent.get_next_path_position() - global_position
 	return Vector2(nav_goal.x, nav_goal.z)
 
@@ -331,6 +344,8 @@ func verplaatsen_gebied(delta) -> void:
 	run_goal = Vector3(run_goal.x, 0, run_goal.y)
 	if(run_goal.length_squared() > 0):
 		verplaatsen_doel(global_position + run_goal, [behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max(), delta)
+	else:
+		lerp_velocity(Vector3.ZERO, delta)
 
 func verplaatsen_doel(goal, behoefte, delta) -> void:
 	navigation_agent.set_target_position(goal)

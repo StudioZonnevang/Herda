@@ -96,6 +96,12 @@ func eat_gras(world_coord: Vector3) -> void:
 	image.blend_rect(graas_image, graas_rect, world_to_tex_coord(world_coord) - Vector2i(graas_size/2.0))
 	RenderingServer.texture_2d_update(texture.get_rid(), image, 0)
 
+func override_pixel(world_coord: Vector3) -> void:
+	var tex_coord = world_to_tex_coord(world_coord)
+	if(tex_coord.x < 0 or tex_coord.x > image.get_width() or tex_coord.y < 0 or tex_coord.y > image.get_height()):
+		return
+	image.set_pixel(tex_coord.x, tex_coord.y, Color(0,0,0,1)) #outside navigatie gebied
+
 func sample_gras(world_coord: Vector3) -> float:
 	var tex_coord = world_to_tex_coord(world_coord)
 	if(tex_coord.x < 0 or tex_coord.x > image.get_width() or tex_coord.y < 0 or tex_coord.y > image.get_height()):

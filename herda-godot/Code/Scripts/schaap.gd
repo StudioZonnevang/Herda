@@ -260,7 +260,7 @@ func voeding_logica(delta) -> void:
 	elif voeding_doel == Vector3.ZERO or recalculate_voeding_doel > 100 or gras_manager.sample_gras(voeding_doel) < 0.5:
 		# check da area. gaat nu in een spiraal naar buiten vanuit het schaap
 		# dit is prima maar het houdt geen rekening met het gezichtveld van het schaap. en dat is misschien oke.
-		var goal = {base = Vector2(global_basis.z.x, global_basis.z.z), rot = -0.001, coord = Vector2.ZERO, value = 0.0}
+		var goal = {base = Vector2(global_basis.z.x, global_basis.z.z), rot = rng.randf_range(-0.3, 0.3), coord = Vector2.ZERO, value = 0.0}
 		
 		var space = get_world_3d().direct_space_state
 		var grond = gras_manager.get_parent()

@@ -106,15 +106,19 @@ graph_offset = Vector2(10, 21)
 radius = 0.1
 height = 0.2
 
-[node name="Schaap" type="CharacterBody3D" unique_id=258340122 node_paths=PackedStringArray("debug_label")]
+[sub_resource type="BoxMesh" id="BoxMesh_v8lhw"]
+size = Vector3(0.3, 0.3, 0.3)
+
+[node name="Schaap" type="CharacterBody3D" unique_id=258340122 node_paths=PackedStringArray("debug_label", "debug_kubus")]
 floor_snap_length = 0.2
 script = ExtResource("1_5i12d")
-debug_label = NodePath("Label3D")
+debug_label = NodePath("Debug label")
+debug_kubus = NodePath("MeshInstance3D")
 
 [node name="schaap model" parent="." unique_id=1055980013 instance=ExtResource("2_v8lhw")]
 transform = Transform3D(-1, 0, 8.742278e-08, 0, 1, 0, -8.742278e-08, 0, -1, 0, 0, -0.41341856)
 
-[node name="Skeleton3D" parent="schaap model/schaap skelet" parent_id_path=PackedInt32Array(1055980013, 1220341595) index="0" unique_id=2001703358]
+[node name="Skeleton3D" parent="schaap model/schaap skelet" parent_id_path=PackedInt32Array(1055980013, 481477074) index="0" unique_id=251509707]
 bones/0/position = Vector3(2.0628791e-16, 0.76320016, 0.12581281)
 bones/1/rotation = Quaternion(0.08891427, -0.002437573, 0.0249753, 0.9957231)
 bones/2/position = Vector3(0.11239947, 0.28270054, -0.29042855)
@@ -142,9 +146,10 @@ bones/18/rotation = Quaternion(0.51509076, -0.015219924, -0.04172335, 0.8559843)
 bones/19/rotation = Quaternion(0.17404592, -3.668428e-09, -4.08474e-08, 0.98473763)
 bones/20/rotation = Quaternion(0.07847434, 2.3768337e-07, 3.3284691e-15, 0.9969161)
 
-[node name="Label3D" type="Label3D" parent="." unique_id=1756365708]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.2538025, 0)
+[node name="Debug label" type="Label3D" parent="." unique_id=1756365708]
+transform = Transform3D(-0.99999994, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -0.99999994, 0, 1.964, 0)
 visible = false
+billboard = 1
 text = "Schaap id:
 "
 
@@ -171,5 +176,8 @@ path_height_offset = 0.5
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.028259575, 0.27317548)
 visible = false
 mesh = SubResource("SphereMesh_v8lhw")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=474499561]
+mesh = SubResource("BoxMesh_v8lhw")
 
 [editable path="schaap model"]

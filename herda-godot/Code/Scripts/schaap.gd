@@ -7,6 +7,8 @@ extends CharacterBody3D
 @export var debug_label : Label3D
 @export var gras_manager: Node3D
 
+@export var debug_kubus: MeshInstance3D
+
 var debug_text = []
 var debug_sphere : MeshInstance3D
 
@@ -160,10 +162,12 @@ func update_behoefte_persoonlijke_ruimte() -> void:
 var afstand_tot_kudde_centrum : float = 0
 var aantal_waargenomen_schapen : int = 0
 var afstand_tot_dichtstbijzijnde_schapen : float
+var laatste_locatie_schapen = Vector3.ZERO
 var eenzame_tijd_verstreken : float = 0
 var minimale_kudde_hoeveelheid : int = 5
 var ervaren_afstand_dichtstbijzijnde_schapen : float
 var eenzaamheid_increment : float
+var eenzaamheid : float = 0
 var debug_val
 #afhankelijk van een soort "loner" / "volgzaamheid" variable?
 
@@ -177,8 +181,7 @@ func update_behoefte_gezelligheid(delta) -> void:
 	
 	# ondersteunende variabelen
 	var dichtstbijzijnde_schapen = []
-	var waargenomen_kudde_centrum : Vector3
-	
+	var waargenomen_kudde_centrum = Vector3.ZERO
 	
 	for i in waargenomen_schapen:
 		var afstand = position.distance_to(i.position)
@@ -190,31 +193,43 @@ func update_behoefte_gezelligheid(delta) -> void:
 	dichtstbijzijnde_schapen.sort_custom(func(a, b): return a[1] > b[1])
 	var aantal_schapen_dichtbij: int = min(minimale_kudde_hoeveelheid, dichtstbijzijnde_schapen.size())
 	var max_gezichtveld_schaap: float = 100.0
-	var gemiddelde_dichtstbijzijnde_schapen_positie : Vector3
-	for i in aantal_schapen_dichtbij:
-		gemiddelde_dichtstbijzijnde_schapen_positie += dichtstbijzijnde_schapen[i][0].position
-	afstand_tot_dichtstbijzijnde_schapen = position.distance_to(gemiddelde_dichtstbijzijnde_schapen_positie/aantal_schapen_dichtbij)
-	ervaren_afstand_dichtstbijzijnde_schapen = (
+	var gemiddelde_dichtstbijzijnde_schapen_positie = Vector3.ZERO
+	if aantal_schapen_dichtbij > 0:
+		for i in range(0, aantal_schapen_dichtbij):
+			gemiddelde_dichtstbijzijnde_schapen_positie += dichtstbijzijnde_schapen[0][0].position
+		afstand_tot_dichtstbijzijnde_schapen = position.distance_to(gemiddelde_dichtstbijzijnde_schapen_positie/aantal_schapen_dichtbij)
+		laatste_locatie_schapen = gemiddelde_dichtstbijzijnde_schapen_positie/aantal_schapen_dichtbij
+		ervaren_afstand_dichtstbijzijnde_schapen = (
 			afstand_tot_dichtstbijzijnde_schapen + 
 			max_gezichtveld_schaap * 
 			(minimale_kudde_hoeveelheid - aantal_schapen_dichtbij))
+	else:
+		ervaren_afstand_dichtstbijzijnde_schapen = max_gezichtveld_schaap * minimale_kudde_hoeveelheid
 	
-	var hoeveelheid_gewicht = 10
-	var afstand_tot_kudde_gewicht = 5
-	var afstand_tot_minimale_kudde_gewicht = 20
-	var target  = 150
-	var xval = min(max_gezichtveld_schaap, afstand_tot_kudde_centrum) / max_gezichtveld_schaap
-	var eenval = -(1 / (40 * (xval - 1)))
-	debug_val = eenval
-	#eenzaamheid_increment = (
-		#hoeveelheid_gewicht * (minimale_kudde_hoeveelheid / aantal_waargenomen_schapen) + #returns a value between 0 and 1
-		#afstand_tot_kudde_gewicht * (min(max_gezichtveld_schaap, afstand_tot_kudde_centrum) / max_gezichtveld_schaap)*(min(max_gezichtveld_schaap, afstand_tot_kudde_centrum) / max_gezichtveld_schaap) +
-		#afstand_tot_minimale_kudde_gewicht * (ervaren_afstand_dichtstbijzijnde_schapen / minimale_kudde_hoeveelheid)*(afstand_tot_dichtstbijzijnde_schapen / minimale_kudde_hoeveelheid)
-		#)
+	var hoeveelheid_gewicht : float = 15.0 / 35.0
+	var afstand_tot_kudde_gewicht : float = 5.0 / 35.0
+	var afstand_tot_minimale_kudde_gewicht : float = 15.0 / 35.0
+	var max_minimale_kudde_afstand = 35.0
 	
-	add_to_debug_panel("Waargenomen schapen: ", aantal_waargenomen_schapen)
-	add_to_debug_panel("Ervaren afstand tot dichtstbijzijnde schapen: ", ervaren_afstand_dichtstbijzijnde_schapen)
-	add_to_debug_panel("Afstand tot waargenomen kudde centrum: ", afstand_tot_kudde_centrum)
+	var hoeveelheid_increment = hoeveelheid_gewicht * ((-0.5 * min(aantal_waargenomen_schapen, 20.0) / minimale_kudde_hoeveelheid) + 1.0)
+	var afstand_tot_kudde_increment = afstand_tot_kudde_gewicht * ((2 * min(max_gezichtveld_schaap, afstand_tot_kudde_centrum) / max_gezichtveld_schaap) - 1.0)
+	var afstand_tot_minimale_kudde_increment = afstand_tot_minimale_kudde_gewicht * (2 * (ervaren_afstand_dichtstbijzijnde_schapen / max_minimale_kudde_afstand) - 1.0)
+	var behoefte_voor_gezelligheid_increment = hoeveelheid_increment + afstand_tot_kudde_increment + afstand_tot_minimale_kudde_increment
+	
+	var duratie = 300
+	behoefte_gezelligheid += delta * behoefte_voor_gezelligheid_increment / duratie
+	behoefte_gezelligheid = min(max(0.0, behoefte_gezelligheid), 1.0)
+	
+	debug_kubus.global_position = laatste_locatie_schapen
+	
+	add_to_debug_panel("laatste_locatie_schapen: ", laatste_locatie_schapen)
+	#add_to_debug_panel("afstand_tot_dichtstbijzijnde_schapen: ", afstand_tot_dichtstbijzijnde_schapen)
+	add_to_debug_panel("ervaren_afstand_dichtstbijzijnde_schapen: ", ervaren_afstand_dichtstbijzijnde_schapen)
+	add_to_debug_panel("hoeveelheid_increment: ", hoeveelheid_increment)
+	add_to_debug_panel("afstand_tot_kudde_increment: ", afstand_tot_kudde_increment)
+	add_to_debug_panel("afstand_tot_minimale_kudde_increment: ", afstand_tot_minimale_kudde_increment)
+	add_to_debug_panel("behoefte_voor_gezelligheid_increment: ", behoefte_voor_gezelligheid_increment)
+	add_to_debug_panel("behoefte_gezelligheid: ", behoefte_gezelligheid)
 
 # bepaalt de manier waarop de behoefte vervuld wordt
 func voeding_logica(delta) -> void:
@@ -300,8 +315,9 @@ func persoonlijke_ruimte_verplaatsing() -> Vector2:
 	return run_direction
 
 func gezelligheid_verplaatsing() -> Vector2:
-	# bereken de vector
-	return Vector2(0,0)
+	navigation_agent.set_target_position(laatste_locatie_schapen)
+	var nav_goal = navigation_agent.get_next_path_position() - global_position
+	return Vector2(nav_goal.x, nav_goal.z)
 
 func verplaatsen_gebied(delta) -> void:
 	# General movement function: optimize position for different goals
@@ -314,7 +330,7 @@ func verplaatsen_gebied(delta) -> void:
 	
 	run_goal = Vector3(run_goal.x, 0, run_goal.y)
 	if(run_goal.length_squared() > 0):
-		verplaatsen_doel(global_position + run_goal, [behoefte_voeding, behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max(), delta)
+		verplaatsen_doel(global_position + run_goal, [behoefte_persoonlijke_ruimte, behoefte_gezelligheid].max(), delta)
 
 func verplaatsen_doel(goal, behoefte, delta) -> void:
 	navigation_agent.set_target_position(goal)

@@ -114,8 +114,49 @@ transform = Transform3D(0.89255446, 0, 0.45093977, 0, 1, 0, -0.45093977, 0, 0.89
 cam = NodePath("../../Camera3D")
 gras_manager = NodePath("../../grond/gras")
 
+[node name="Schaap9" parent="schapen" unique_id=258340122 node_paths=PackedStringArray("cam", "gras_manager") instance=ExtResource("3_bski0")]
+transform = Transform3D(0.73231715, 0, 0.6809638, 0, 1, 0, -0.6809638, 0, 0.73231715, 1.4602618, 0, -2.911818)
+cam = NodePath("../../Camera3D")
+gras_manager = NodePath("../../grond/gras")
+
+[node name="Schaap10" parent="schapen" unique_id=1718408612 node_paths=PackedStringArray("cam", "gras_manager") instance=ExtResource("3_bski0")]
+transform = Transform3D(-0.08484314, 0, 0.9963946, 0, 1, 0, -0.9963946, 0, -0.08484314, 3.642775, 0, -5.1740174)
+cam = NodePath("../../Camera3D")
+gras_manager = NodePath("../../grond/gras")
+
+[node name="Schaap11" parent="schapen" unique_id=2120287503 node_paths=PackedStringArray("cam", "gras_manager") instance=ExtResource("3_bski0")]
+transform = Transform3D(-0.7403943, 0, -0.67217284, 0, 1, 0, 0.67217284, 0, -0.7403943, -0.18439627, 0, 10.284135)
+cam = NodePath("../../Camera3D")
+gras_manager = NodePath("../../grond/gras")
+
+[node name="Schaap12" parent="schapen" unique_id=857102025 node_paths=PackedStringArray("cam", "gras_manager") instance=ExtResource("3_bski0")]
+transform = Transform3D(-0.94875467, 0, 0.31601351, 0, 1, 0, -0.31601351, 0, -0.94875467, -7.1900897, 0, -6.3645167)
+cam = NodePath("../../Camera3D")
+gras_manager = NodePath("../../grond/gras")
+
+[node name="Schaap13" parent="schapen" unique_id=2031403937 node_paths=PackedStringArray("cam", "gras_manager") instance=ExtResource("3_bski0")]
+transform = Transform3D(0.05894067, 0, -0.99826163, 0, 1, 0, 0.99826163, 0, 0.05894067, -5.304535, 0, -4.490953)
+cam = NodePath("../../Camera3D")
+gras_manager = NodePath("../../grond/gras")
+
+[node name="Schaap14" parent="schapen" unique_id=1490206253 node_paths=PackedStringArray("cam", "gras_manager") instance=ExtResource("3_bski0")]
+transform = Transform3D(0.9700418, 0, -0.24293791, 0, 1, 0, 0.24293791, 0, 0.9700418, -7.9482527, 0, -0.25850987)
+cam = NodePath("../../Camera3D")
+gras_manager = NodePath("../../grond/gras")
+
+[node name="Schaap15" parent="schapen" unique_id=1925175324 node_paths=PackedStringArray("cam", "gras_manager") instance=ExtResource("3_bski0")]
+transform = Transform3D(-0.9739287, 0, 0.22685556, 0, 1, 0, -0.22685556, 0, -0.9739287, -2.5997725, 0, -7.208869)
+cam = NodePath("../../Camera3D")
+gras_manager = NodePath("../../grond/gras")
+
+[node name="Schaap16" parent="schapen" unique_id=1919392779 node_paths=PackedStringArray("cam", "gras_manager") instance=ExtResource("3_bski0")]
+transform = Transform3D(0.34655935, 0, 0.9380283, 0, 1, 0, -0.9380283, 0, 0.34655935, 1.0035062, 0, -7.6108174)
+cam = NodePath("../../Camera3D")
+gras_manager = NodePath("../../grond/gras")
+
 [node name="Camera3D" type="Camera3D" parent="." unique_id=1317603994 node_paths=PackedStringArray("debug_sphere", "gras_manager")]
-transform = Transform3D(-4.371139e-08, -1, 0, -4.371139e-08, 1.9106855e-15, 1, -1, 4.371139e-08, -4.371139e-08, 0, 15.19, 0)
+transform = Transform3D(-4.371139e-08, -1, 0, -4.371139e-08, 1.9106855e-15, 1, -1, 4.371139e-08, -4.371139e-08, 0, 36.99217, 0)
+current = true
 script = ExtResource("2_rbvbe")
 debug_sphere = NodePath("../Debug_sphere")
 gras_manager = NodePath("../grond/gras")

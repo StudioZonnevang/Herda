@@ -8,7 +8,7 @@ uniform float random_noise_strength = 0.1;
 uniform float gras_strength = 0.5;
 
 void vertex() {
-	// Called for every vertex the material is visible on.
+	//  if its outside the gpu grass range we should raise the vertices a bit based on the grass map to simulate 3d grass
 }
 
 void fragment() {

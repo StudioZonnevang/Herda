@@ -70,6 +70,13 @@ size = Vector2(50, 50)
 [sub_resource type="ConvexPolygonShape3D" id="ConvexPolygonShape3D_1snug"]
 points = PackedVector3Array(-100, 0, -100, -100, 0, 100, 100, 0, 100, 100, 0, -100)
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_5ave8"]
+frequency = 0.03
+fractal_octaves = 3
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_c7s1s"]
+noise_type = 2
+
 [node name="veld" type="Node3D" unique_id=758643933]
 
 [node name="schapen" type="Node3D" parent="." unique_id=808041578]
@@ -236,6 +243,8 @@ shape = SubResource("ConvexPolygonShape3D_1snug")
 script = ExtResource("5_bski0")
 grond_mesh = NodePath("../grond mesh")
 gras_mesh = NodePath("../gras_mesh")
+world_noise_generator = SubResource("FastNoiseLite_5ave8")
+local_noise_generator = SubResource("FastNoiseLite_c7s1s")
 
 [node name="gras_mesh" type="Node3D" parent="grond" unique_id=719333787 node_paths=PackedStringArray("grond")]
 script = ExtResource("6_mrk32")

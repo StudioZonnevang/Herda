@@ -30,7 +30,7 @@ var interesse_angle: float = 0.0
 @export var schaap_acceleration: float = 1
 @export var schaap_deceleration: float = 3
 var read_velocity: Vector3 # this is only for reading velocity from inspector. shouldnt be used in logic
-var verplaatsing_doel: Vector3 = Vector3.ZERO
+var voeding_doel: Vector3 = Vector3.ZERO
 
 @export var minimum_behoefte: float = 0.01
 
@@ -242,20 +242,29 @@ func voeding_logica(delta) -> void:
 		# ze moeten niet allemaal dezelfde kant opgaan
 	# - ze blijven soms hangen als ze denken dat het eten op is
 	if gras_manager.sample_gras(mondje.global_position) > 0.4:
-		verplaatsing_doel = Vector3.ZERO
-	elif verplaatsing_doel == Vector3.ZERO or gras_manager.sample_gras(verplaatsing_doel) < 0.5:
+		voeding_doel = Vector3.ZERO
+	elif voeding_doel == Vector3.ZERO or gras_manager.sample_gras(voeding_doel) < 0.5:
 		# check da area. gaat nu in een spiraal naar buiten vanuit het schaap
 		# dit is prima maar het houdt geen rekening met het gezichtveld van het schaap. en dat is misschien oke.
-		var goal = {coord = Vector2(global_basis.z.x, global_basis.z.z), value = 0.0}
+		var goal = {base = Vector2(global_basis.z.x, global_basis.z.z), rot = -0.001, coord = Vector2.ZERO, value = 0.0}
+		
+		var space = get_world_3d().direct_space_state
+		var grond = gras_manager.get_parent()
 		while goal.value < 0.5 and goal.coord.length() < 50:
-			goal.coord = goal.coord.rotated(0.1) * 1.01
-			goal.value = gras_manager.sample_gras(global_position + Vector3(goal.coord.x, 0.0, goal.coord.y))
+			goal.base = goal.base * 1.01
+			goal.coord = goal.base.rotated(goal.rot)
+			var hit = space.intersect_ray(
+				PhysicsRayQueryParameters3D.create(mondje.global_position, global_position + Vector3(goal.coord.x, -0.1, goal.coord.y))) #this will be trouble later
+			if hit and hit.collider != grond:
+				goal.value = 0.0
+			else:
+				goal.value = gras_manager.sample_gras(global_position + Vector3(goal.coord.x, 0.0, goal.coord.y))
+			goal.rot = -goal.rot - 0.1 * sign(goal.rot)
 		if goal.value > 0.5:
-			verplaatsing_doel = global_position + Vector3(goal.coord.x, 0.0, goal.coord.y)
-	
-	if verplaatsing_doel != Vector3.ZERO:
-		verplaatsen_doel(verplaatsing_doel, behoefte_voeding, delta)
-		if verplaatsing_doel.distance_squared_to(global_position) > 1.5:
+			voeding_doel = global_position + Vector3(goal.coord.x, 0.0, goal.coord.y)
+	if voeding_doel != Vector3.ZERO:
+		verplaatsen_doel(voeding_doel, behoefte_voeding, delta)
+		if voeding_doel.distance_squared_to(global_position) > 1.5:
 			return
 	elif gras_manager.sample_gras(mondje.global_position) < 0.4:
 		# schaap gaat in exploration modus. hebben we nog niet

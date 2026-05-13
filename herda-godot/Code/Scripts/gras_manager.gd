@@ -32,7 +32,9 @@ func _ready() -> void:
 		# take noise map as base image
 		image = gras_shader.get_shader_parameter("gras_map").noise.get_image(tex_size.x, tex_size.y)
 		image.convert(Image.FORMAT_LA8)
-		call_deferred("purge_grass")
+		
+		#call_deferred("purge_grass") # this method sucks
+		call_deferred("save_png")
 		
 		graas_image = Image.create_empty(graas_size.x, graas_size.y, false, Image.FORMAT_LA8)
 		graas_image.fill(Color.BLACK)
@@ -81,6 +83,9 @@ func purge_grass() -> void:
 				PhysicsRayQueryParameters3D.create(coord + Vector3.UP * 100, coord + Vector3.DOWN * 100))
 			if hit and hit.collider.name != "grond" and !hit.collider.name.begins_with("Schaap"):
 				image.set_pixel(x, y, Color(0,0,0,1))
+	save_png()
+
+func save_png() -> void:
 	RenderingServer.texture_2d_update(texture.get_rid(), image, 0)
 	image.save_png(GRAS_MAP_PATH)
 
@@ -93,6 +98,8 @@ func eat_gras(world_coord: Vector3) -> void:
 
 func sample_gras(world_coord: Vector3) -> float:
 	var tex_coord = world_to_tex_coord(world_coord)
+	if(tex_coord.x < 0 or tex_coord.x > image.get_width() or tex_coord.y < 0 or tex_coord.y > image.get_height()):
+		return 0.0
 	return image.get_pixel(tex_coord.x, tex_coord.y).r
 	
 func world_to_tex_coord(world_coord: Vector3) -> Vector2i:

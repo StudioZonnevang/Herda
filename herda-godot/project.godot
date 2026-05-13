@@ -56,6 +56,10 @@ nudge={
 ]
 }
 
+[layer_names]
+
+3d_physics/layer_2="Gezichtsobstructie"
+
 [navigation]
 
 3d/default_cell_size=0.2

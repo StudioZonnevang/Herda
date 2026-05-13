@@ -180,6 +180,7 @@ mesh = SubResource("PlaneMesh_bski0")
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="NavigationRegion3D" unique_id=892237312]
 use_collision = true
+collision_layer = 3
 
 [node name="CSGBox3D" type="CSGBox3D" parent="NavigationRegion3D/CSGCombiner3D" unique_id=993398921]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.065048, 0, 1.3597269)
@@ -225,6 +226,7 @@ transform = Transform3D(0.8064446, 0, 0.59130967, 0, 1, 0, -0.59130967, 0, 0.806
 size = Vector3(4.3100586, 2.0805054, 5.7958984)
 
 [node name="grond" type="StaticBody3D" parent="." unique_id=256674583]
+collision_layer = 3
 
 [node name="grond mesh" type="MeshInstance3D" parent="grond" unique_id=1690460417]
 mesh = SubResource("PlaneMesh_5nc8e")

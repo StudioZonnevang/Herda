@@ -161,6 +161,7 @@ transform = Transform3D(0.8794408, 0.14315106, -0.45397323, -0.16504131, 0.98624
 [node name="AnimationPlayer" type="AnimationPlayer" parent="cam_base/cam_rot" unique_id=1165414428]
 
 [node name="herder" type="CharacterBody3D" parent="." unique_id=1530248349 node_paths=PackedStringArray("cam", "cam_base", "cam_rot", "animation_tree")]
+collision_layer = 3
 script = ExtResource("1_f4ovj")
 cam = NodePath("../cam_base/cam_rot/SpringArm3D/d_camera")
 cam_base = NodePath("../cam_base")
@@ -188,7 +189,7 @@ bones/11/position = Vector3(-0.13250704, 0.575872, 8.0309704e-08)
 bones/11/rotation = Quaternion(1.419526e-05, -1.204032e-07, 0.9999945, -0.0033099067)
 bones/12/rotation = Quaternion(4.0740292e-07, 9.962684e-08, 0.0063975444, 0.99997956)
 
-[node name="onderarm r" parent="herder/herda2/herda/Skeleton3D" index="0" unique_id=2052373752]
+[node name="onderarm r" parent="herder/herda2/herda/Skeleton3D" index="0" unique_id=1467702784]
 transform = Transform3D(-0.9955215, -0.06938656, 0.06420716, -0.06668965, 0.03407201, -0.9971919, 0.06700405, -0.9970078, -0.03854692, 0.31732526, 0.7293947, -0.17974676)
 
 [node name="herder model animation tree" type="AnimationTree" parent="." unique_id=474581534]

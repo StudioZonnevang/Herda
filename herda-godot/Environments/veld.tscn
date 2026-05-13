@@ -80,49 +80,41 @@ light_energy = 1.92
 [node name="Schaap" parent="schapen" unique_id=267504549 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.004660069, 0, -0.99998915, 0, 1, 0, 0.99998915, 0, 0.004660069, -3.2685547, 0, 1.6965332)
 herder_scene = NodePath("../../herder_scene")
-debug_mode = false
 gras_manager = NodePath("../../grond/gras")
 
 [node name="Schaap4" parent="schapen" unique_id=670988552 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.7903155, 0, -0.61270016, 0, 1, 0, 0.61270016, 0, 0.7903155, -3.083496, 0, 4.8344727)
 herder_scene = NodePath("../../herder_scene")
-debug_mode = false
 gras_manager = NodePath("../../grond/gras")
 
 [node name="Schaap5" parent="schapen" unique_id=32996501 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.007277906, 0, 0.99997354, 0, 1, 0, -0.99997354, 0, 0.007277906, -0.678, 0, -3.634)
 herder_scene = NodePath("../../herder_scene")
-debug_mode = false
 gras_manager = NodePath("../../grond/gras")
 
 [node name="Schaap6" parent="schapen" unique_id=655873081 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.8752451, 0, 0.48367968, 0, 1, 0, -0.48367968, 0, 0.8752451, 5.131836, 0, -2.326294)
 herder_scene = NodePath("../../herder_scene")
-debug_mode = false
 gras_manager = NodePath("../../grond/gras")
 
 [node name="Schaap7" parent="schapen" unique_id=459055785 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(-0.7741387, 0, 0.63301605, 0, 1, 0, -0.63301605, 0, -0.7741387, 2.4763184, 0, -2.2089233)
 herder_scene = NodePath("../../herder_scene")
-debug_mode = false
 gras_manager = NodePath("../../grond/gras")
 
 [node name="Schaap8" parent="schapen" unique_id=776454124 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(-0.8359223, 0, -0.5488478, 0, 1, 0, 0.5488478, 0, -0.8359223, 1.1546631, 0, -7.020996)
 herder_scene = NodePath("../../herder_scene")
-debug_mode = false
 gras_manager = NodePath("../../grond/gras")
 
 [node name="Schaap2" parent="schapen" unique_id=1086239353 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.8267273, 0, 0.56260294, 0, 1, 0, -0.56260294, 0, 0.8267273, 2.6427002, 0, 1.6218872)
 herder_scene = NodePath("../../herder_scene")
-debug_mode = false
 gras_manager = NodePath("../../grond/gras")
 
 [node name="Schaap3" parent="schapen" unique_id=1183785107 node_paths=PackedStringArray("herder_scene", "gras_manager") instance=ExtResource("2_kiesj")]
 transform = Transform3D(0.45509425, 0, -0.8904433, 0, 1, 0, 0.8904433, 0, 0.45509425, 0.49694824, 0, 4.5443726)
 herder_scene = NodePath("../../herder_scene")
-debug_mode = false
 gras_manager = NodePath("../../grond/gras")
 
 [node name="NavigationRegion3D" type="NavigationRegion3D" parent="." unique_id=439958201]
@@ -134,6 +126,7 @@ mesh = SubResource("PlaneMesh_sk88p")
 
 [node name="CSGCombiner3D" type="CSGCombiner3D" parent="NavigationRegion3D" unique_id=1019219821]
 use_collision = true
+collision_layer = 3
 
 [node name="CSGBox3D" type="CSGBox3D" parent="NavigationRegion3D/CSGCombiner3D" unique_id=1007979684]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 6.065048, 0, 1.3597269)
@@ -179,6 +172,7 @@ transform = Transform3D(0.8064446, 0, 0.59130967, 0, 1, 0, -0.59130967, 0, 0.806
 size = Vector3(4.3100586, 2.0805054, 5.7958984)
 
 [node name="grond" type="StaticBody3D" parent="." unique_id=555984510]
+collision_layer = 3
 
 [node name="grond mesh" type="MeshInstance3D" parent="grond" unique_id=162678815]
 mesh = SubResource("PlaneMesh_1t4lw")

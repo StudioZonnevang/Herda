@@ -134,7 +134,7 @@ func update_waargenomen_schapen() -> void:
 		
 		var target_coordinates = schaapje.global_position + Vector3.UP * 0.8
 		var hit = space.intersect_ray(
-			PhysicsRayQueryParameters3D.create(global_position + Vector3.UP * 0.8, target_coordinates))
+			PhysicsRayQueryParameters3D.create(global_position + Vector3.UP * 0.8, target_coordinates, 0x0002))
 		if !hit or hit.collider == schaapje:
 			waargenomen_schapen.append(schaapje)
 
@@ -195,7 +195,7 @@ func update_behoefte_gezelligheid(delta) -> void:
 	
 	dichtstbijzijnde_schapen.sort_custom(func(a, b): return a["afstand"] < b["afstand"])
 	var aantal_schapen_dichtbij: int = min(minimale_kudde_hoeveelheid, dichtstbijzijnde_schapen.size())
-	var max_gezichtveld_schaap: float = 100.0
+	var max_gezichtveld_schaap: float = 35.0
 	var gemiddelde_dichtstbijzijnde_schapen_positie = Vector3.ZERO
 	if aantal_schapen_dichtbij > 0:
 		for i in range(0, aantal_schapen_dichtbij):
@@ -209,8 +209,8 @@ func update_behoefte_gezelligheid(delta) -> void:
 	else:
 		ervaren_afstand_dichtstbijzijnde_schapen = max_gezichtveld_schaap * minimale_kudde_hoeveelheid
 	
-	var hoeveelheid_gewicht : float = 15.0 / 35.0
-	var afstand_tot_kudde_gewicht : float = 5.0 / 35.0
+	var hoeveelheid_gewicht : float = 10.0 / 35.0
+	var afstand_tot_kudde_gewicht : float = 10.0 / 35.0
 	var afstand_tot_minimale_kudde_gewicht : float = 15.0 / 35.0
 	var max_minimale_kudde_afstand = 35.0
 	
@@ -219,8 +219,8 @@ func update_behoefte_gezelligheid(delta) -> void:
 	var afstand_tot_minimale_kudde_increment = afstand_tot_minimale_kudde_gewicht * (2 * (ervaren_afstand_dichtstbijzijnde_schapen / max_minimale_kudde_afstand) - 1.0)
 	var behoefte_voor_gezelligheid_increment = hoeveelheid_increment + afstand_tot_kudde_increment + afstand_tot_minimale_kudde_increment
 	
-	var toeneem_duratie = 600
-	var afloop_duratie = 10
+	var toeneem_duratie = 300
+	var afloop_duratie = 50
 	if (behoefte_voor_gezelligheid_increment > 0):
 		behoefte_gezelligheid += delta * behoefte_voor_gezelligheid_increment / toeneem_duratie
 	else: 
@@ -237,7 +237,10 @@ func update_behoefte_gezelligheid(delta) -> void:
 	#add_to_debug_panel("afstand_tot_kudde_increment: ", afstand_tot_kudde_increment)
 	#add_to_debug_panel("afstand_tot_minimale_kudde_increment: ", afstand_tot_minimale_kudde_increment)
 	#add_to_debug_panel("behoefte_voor_gezelligheid_increment: ", behoefte_voor_gezelligheid_increment)
+	add_to_debug_panel("aantal_waargenomen_schapen: ", aantal_waargenomen_schapen)
 	add_to_debug_panel("behoefte_gezelligheid: ", behoefte_gezelligheid)
+	Debug_tools.print_object_variabele(name, "behoefte_gezelligheid: \t", behoefte_gezelligheid)
+	Debug_tools.print_object_variabele(name, "behoefte_voeding: \t\t", behoefte_voeding)
 	
 # rood schaap gezelligheid
 # gezelligheid plummet harder
@@ -341,7 +344,7 @@ func persoonlijke_ruimte_verplaatsing() -> Vector2:
 	return run_direction
 
 func gezelligheid_verplaatsing() -> Vector2:
-	#var nav_locatie = laatste_locatie_schapen * behoefte_gezelligheid + global_position * (1-behoefte_gezelligheid)
+	#var nav_locatie = laatste_locatie_schapen * 4 * behoefte_gezelligheid + global_position * (1-behoefte_gezelligheid) / 4
 	var nav_locatie = laatste_locatie_schapen
 	navigation_agent.set_target_position(nav_locatie)
 	var nav_goal = navigation_agent.get_next_path_position() - global_position
@@ -410,6 +413,12 @@ func schaap_kleuren(measured_variable, max_variable = 1) -> void:
 	var debug_red_value = remap(measured_variable, 0, max_variable, 0, 1)
 	material.albedo_color = Color(debug_red_value, 0.5, 0.5)
 	body.set_surface_override_material(0, material)
+
+#func console_printer(variabel_naam : String, variabel_waarde) -> void:
+	#var framecount = Engine.get_frames_drawn()
+	#if (fmod(framecount, 600) == 0):
+		#var boodschap : String = variabel_naam + str(variabel_waarde)
+		#print(boodschap)
 
 func add_to_debug_panel(variabel_naam : String, variabel_waarde) -> void:
 	var regel : String = variabel_naam + str(variabel_waarde)

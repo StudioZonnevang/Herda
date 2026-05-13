@@ -149,6 +149,7 @@ bones/20/rotation = Quaternion(0.07847434, 2.3768337e-07, 3.3284691e-15, 0.99691
 [node name="Debug label" type="Label3D" parent="." unique_id=1756365708]
 transform = Transform3D(-0.99999994, 0, -8.742277e-08, 0, 1, 0, 8.742277e-08, 0, -0.99999994, 0, 1.964, 0)
 billboard = 1
+render_priority = 1
 text = "Schaap id:
 "
 
